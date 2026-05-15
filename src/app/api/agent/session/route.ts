@@ -25,10 +25,23 @@ export async function POST() {
   }
 
   const model = process.env.OPENAI_REALTIME_MODEL || "gpt-realtime";
-  // "cedar" is the GA male voice — warm, charismatic, professional.
-  // Alternates if you want to A/B: "onyx" (deeper, more formal),
-  // "echo" (lighter), "verse" (more expressive). Override via env.
-  const voice = process.env.OPENAI_REALTIME_VOICE || "cedar";
+
+  // Realtime API GA voices (from upstream error message at /v1/realtime/client_secrets):
+  //   alloy · ash · ballad · coral · echo · sage · shimmer · verse · marin · cedar
+  // NOTE: onyx / fable / nova are TTS-only voices and are NOT accepted by Realtime.
+  // Cedar is the warmest GA male voice. Echo / ash are alternative males.
+  const VALID_VOICES = new Set([
+    "alloy", "ash", "ballad", "coral", "echo",
+    "sage", "shimmer", "verse", "marin", "cedar",
+  ]);
+  const rawVoice = process.env.OPENAI_REALTIME_VOICE || "cedar";
+  const voice = VALID_VOICES.has(rawVoice) ? rawVoice : "cedar";
+  if (!VALID_VOICES.has(rawVoice)) {
+    console.warn(
+      `[/api/agent/session] OPENAI_REALTIME_VOICE="${rawVoice}" is not a valid Realtime voice; using "cedar". ` +
+      `Valid: ${Array.from(VALID_VOICES).join(", ")}`
+    );
+  }
 
   const sessionConfig = {
     type: "realtime",
