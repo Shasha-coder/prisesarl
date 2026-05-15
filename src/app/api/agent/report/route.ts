@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 /**
  * POST /api/agent/report
  *
  * Receives the final summary + lead + full transcript from Ernest and
- * emails it to ernestk@prisesarl.com.
+ * sends it via Purelymail SMTP to ernestk@prisesarl.com.
  *
- * Requires env: RESEND_API_KEY.
+ * Required env:
+ *   SMTP_HOST       (e.g. smtp.purelymail.com)
+ *   SMTP_USER       (your Purelymail mailbox, e.g. ernest@prise-sarl.cd)
+ *   SMTP_PASS       (Purelymail SMTP password)
  * Optional env:
+ *   SMTP_PORT       (defaults to 587 for STARTTLS, use 465 for full TLS)
+ *   SMTP_SECURE     ("true" to force TLS, defaults to true if port==465)
  *   AGENT_REPORT_TO   (defaults to ernestk@prisesarl.com)
- *   AGENT_REPORT_FROM (defaults to ernest@prise-sarl.cd; must match a Resend-verified domain)
+ *   AGENT_REPORT_FROM (defaults to SMTP_USER)
  */
 
 interface ReportPayload {
@@ -21,13 +26,20 @@ interface ReportPayload {
 }
 
 export async function POST(req: Request) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!host || !user || !pass) {
     return NextResponse.json(
-      { error: "RESEND_API_KEY is not set on the server." },
+      { error: "SMTP_HOST / SMTP_USER / SMTP_PASS must be set on the server." },
       { status: 500 }
     );
   }
+
+  const port = Number(process.env.SMTP_PORT ?? 587);
+  const secure =
+    process.env.SMTP_SECURE === "true" || port === 465;
 
   let body: ReportPayload;
   try {
@@ -37,20 +49,14 @@ export async function POST(req: Request) {
   }
 
   const to = process.env.AGENT_REPORT_TO || "ernestk@prisesarl.com";
-  const from = process.env.AGENT_REPORT_FROM || "Ernest (PRISE) <onboarding@resend.dev>";
+  const from = process.env.AGENT_REPORT_FROM || user;
 
-  const resend = new Resend(apiKey);
-
-  const transcriptHtml = (body.transcript ?? [])
+  const transcriptRows = (body.transcript ?? [])
     .map(
       (t) => `
       <tr>
-        <td style="padding:4px 12px 4px 0;color:#8a96aa;font-size:12px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.1em;vertical-align:top;">
-          ${t.role}
-        </td>
-        <td style="padding:4px 0;color:#0a2240;font-size:14px;line-height:1.55;">
-          ${escapeHtml(t.text)}
-        </td>
+        <td style="padding:4px 12px 4px 0;color:#8a96aa;font-size:12px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.1em;vertical-align:top;">${t.role}</td>
+        <td style="padding:4px 0;color:#0a2240;font-size:14px;line-height:1.55;">${escapeHtml(t.text)}</td>
       </tr>`
     )
     .join("");
@@ -75,7 +81,7 @@ export async function POST(req: Request) {
     </table>
 
     <h2 style="font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:#c8632b;margin:32px 0 8px;">Transcription complète</h2>
-    <table style="border-collapse:collapse;width:100%;">${transcriptHtml || "<tr><td>(vide)</td></tr>"}</table>
+    <table style="border-collapse:collapse;width:100%;">${transcriptRows || "<tr><td>(vide)</td></tr>"}</table>
 
     <hr style="border:none;border-top:1px solid #ece4d2;margin:32px 0 16px;" />
     <p style="font-size:11px;color:#8a96aa;letter-spacing:0.1em;text-transform:uppercase;margin:0;">
@@ -84,17 +90,21 @@ export async function POST(req: Request) {
   </div>
   `;
 
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth: { user, pass },
+  });
+
   try {
-    const result = await resend.emails.send({
+    const info = await transporter.sendMail({
       from,
       to,
       subject: `[Ernest] ${body.lead?.name || "Visiteur"} — ${body.summary?.slice(0, 60) || "Briefing"}`,
       html,
     });
-    if (result.error) {
-      return NextResponse.json({ error: result.error.message }, { status: 500 });
-    }
-    return NextResponse.json({ ok: true, id: result.data?.id ?? null });
+    return NextResponse.json({ ok: true, id: info.messageId ?? null });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
