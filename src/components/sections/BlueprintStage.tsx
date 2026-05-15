@@ -29,17 +29,20 @@ const COMMON_PATH_STROKE = "stroke-ink";
 
 export function BlueprintStage({ active }: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
-  const sceneRefs = {
-    civil: useRef<SVGGElement>(null),
-    telecom: useRef<SVGGElement>(null),
-    energy: useRef<SVGGElement>(null),
-    logistics: useRef<SVGGElement>(null),
-    training: useRef<SVGGElement>(null),
-  } as const;
+  const civilRef = useRef<SVGGElement | null>(null);
+  const telecomRef = useRef<SVGGElement | null>(null);
+  const energyRef = useRef<SVGGElement | null>(null);
+  const logisticsRef = useRef<SVGGElement | null>(null);
+  const trainingRef = useRef<SVGGElement | null>(null);
 
   // Animate active scene on mount + every change.
   useEffect(() => {
-    const sceneEl = sceneRefs[active].current;
+    const sceneEl =
+      active === "civil" ? civilRef.current :
+      active === "telecom" ? telecomRef.current :
+      active === "energy" ? energyRef.current :
+      active === "logistics" ? logisticsRef.current :
+      trainingRef.current;
     if (!sceneEl) return;
 
     const paths = sceneEl.querySelectorAll<SVGGeometryElement>("[data-draw]");
@@ -128,7 +131,7 @@ export function BlueprintStage({ active }: Props) {
         />
 
         {/* CIVIL — building cross-section */}
-        <g ref={sceneRefs.civil} className={COMMON_PATH_STROKE} style={{ display: active === "civil" ? "block" : "none" }}>
+        <g ref={civilRef} className={COMMON_PATH_STROKE} style={{ display: active === "civil" ? "block" : "none" }}>
           {/* Foundation */}
           <path data-draw d="M 110 470 L 490 470 L 490 500 L 110 500 Z" fill="none" stroke="currentColor" strokeWidth="2" />
           <path data-draw d="M 130 500 L 130 530 M 470 500 L 470 530 M 200 500 L 200 525 M 300 500 L 300 525 M 400 500 L 400 525" stroke="currentColor" strokeWidth="1" />
@@ -160,7 +163,7 @@ export function BlueprintStage({ active }: Props) {
         </g>
 
         {/* TELECOM — telecom tower */}
-        <g ref={sceneRefs.telecom} className={COMMON_PATH_STROKE} style={{ display: active === "telecom" ? "block" : "none" }}>
+        <g ref={telecomRef} className={COMMON_PATH_STROKE} style={{ display: active === "telecom" ? "block" : "none" }}>
           {/* Base pad */}
           <path data-draw d="M 200 510 L 400 510 L 400 530 L 200 530 Z" fill="none" stroke="currentColor" strokeWidth="2" />
           {/* Outer tower (tapered) */}
@@ -188,7 +191,7 @@ export function BlueprintStage({ active }: Props) {
         </g>
 
         {/* ENERGY — solar field cross-section */}
-        <g ref={sceneRefs.energy} className={COMMON_PATH_STROKE} style={{ display: active === "energy" ? "block" : "none" }}>
+        <g ref={energyRef} className={COMMON_PATH_STROKE} style={{ display: active === "energy" ? "block" : "none" }}>
           {/* Ground */}
           <path data-draw d="M 60 470 L 540 470" stroke="currentColor" strokeWidth="2" />
           <path data-draw d="M 60 478 L 78 470 M 90 478 L 108 470 M 120 478 L 138 470 M 150 478 L 168 470 M 180 478 L 198 470 M 210 478 L 228 470 M 240 478 L 258 470 M 270 478 L 288 470 M 300 478 L 318 470 M 330 478 L 348 470 M 360 478 L 378 470 M 390 478 L 408 470 M 420 478 L 438 470 M 450 478 L 468 470 M 480 478 L 498 470 M 510 478 L 528 470" stroke="currentColor" strokeWidth="0.8" />
@@ -221,7 +224,7 @@ export function BlueprintStage({ active }: Props) {
         </g>
 
         {/* LOGISTICS — heavy truck profile */}
-        <g ref={sceneRefs.logistics} className={COMMON_PATH_STROKE} style={{ display: active === "logistics" ? "block" : "none" }}>
+        <g ref={logisticsRef} className={COMMON_PATH_STROKE} style={{ display: active === "logistics" ? "block" : "none" }}>
           {/* Ground line */}
           <path data-draw d="M 40 470 L 560 470" stroke="currentColor" strokeWidth="2" />
           {/* Cab */}
@@ -258,7 +261,7 @@ export function BlueprintStage({ active }: Props) {
         </g>
 
         {/* TRAINING — classroom plan + certificate */}
-        <g ref={sceneRefs.training} className={COMMON_PATH_STROKE} style={{ display: active === "training" ? "block" : "none" }}>
+        <g ref={trainingRef} className={COMMON_PATH_STROKE} style={{ display: active === "training" ? "block" : "none" }}>
           {/* Room outline */}
           <path data-draw d="M 80 130 L 420 130 L 420 470 L 80 470 Z" fill="none" stroke="currentColor" strokeWidth="2" />
           {/* Door */}
