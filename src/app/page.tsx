@@ -18,7 +18,17 @@ const jsonLd = {
     "addressCountry": "CD",
   },
   "url": "https://prise-sarl.cd",
-  "telephone": "+243810000000",
+  "telephone": "+243824613377",
+  "contactPoint": [
+    {
+      "@type": "ContactPoint",
+      "telephone": "+243824613377",
+      "contactType": "customer service",
+      "areaServed": "CD",
+      "availableLanguage": ["fr", "en"],
+      "contactOption": ["TollFree", "HearingImpairedSupported"],
+    },
+  ],
   "areaServed": "RDC",
   "knowsAbout": [
     "Génie Civil",

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
 import { useT } from "@/i18n/I18nProvider";
 
 export function Footer() {
@@ -53,13 +53,34 @@ export function Footer() {
                 <MapPin className="w-4 h-4 mt-0.5 text-hot" />
                 <span className="text-[13px] leading-tight">Kinshasa, RDC<br/>Avenue de l&apos;Avenir</span>
               </li>
-              <li className="flex items-start gap-3 text-paper/70">
-                <Phone className="w-4 h-4 mt-0.5 text-hot" />
-                <span className="text-[13px]">+243 81 000 0000</span>
+              <li>
+                <a
+                  href="tel:+243824613377"
+                  className="flex items-start gap-3 text-paper/70 hover:text-white transition-colors"
+                >
+                  <Phone className="w-4 h-4 mt-0.5 text-hot shrink-0" />
+                  <span className="text-[13px] tracking-[0.02em]">+243 824 613 377</span>
+                </a>
               </li>
-              <li className="flex items-start gap-3 text-paper/70">
-                <Mail className="w-4 h-4 mt-0.5 text-hot" />
-                <span className="text-[13px]">contact@prise-sarl.cd</span>
+              <li>
+                <a
+                  href="https://wa.me/243824613377?text=Bonjour%20PRISE%20Sarl%2C%20j%27aimerais%20discuter%20d%27un%20projet%20avec%20votre%20%C3%A9quipe."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 text-paper/70 hover:text-white transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4 mt-0.5 text-hot shrink-0" />
+                  <span className="text-[13px] tracking-[0.02em]">WhatsApp · +243 824 613 377</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:contact@prise-sarl.cd"
+                  className="flex items-start gap-3 text-paper/70 hover:text-white transition-colors"
+                >
+                  <Mail className="w-4 h-4 mt-0.5 text-hot shrink-0" />
+                  <span className="text-[13px]">contact@prise-sarl.cd</span>
+                </a>
               </li>
             </ul>
           </div>
