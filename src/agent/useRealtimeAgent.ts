@@ -205,13 +205,19 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
             },
           })
         );
-        // Have Ernest open the conversation — greet and offer a tour.
+        // Have Ernest open the conversation immediately with a concrete
+        // French greeting. He keeps speaking French unless the visitor
+        // replies in another language.
         dc.send(
           JSON.stringify({
             type: "response.create",
             response: {
               instructions:
-                "Greet the visitor warmly in their detected language (default French if unknown). Introduce yourself in one sentence as Ernest, the PRISE Sarl concierge. Then ask EXPLICITLY whether they'd like a guided tour of our services or whether they already have a specific project in mind. Keep it to two sentences.",
+                "Open the conversation NOW by speaking aloud the following greeting in warm, natural French: " +
+                "« Bonjour et bienvenue chez PRISE Sarl. Je suis Ernest, votre concierge. Comment puis-je vous aider aujourd'hui ? » " +
+                "Speak it with the calm, charismatic confidence of a senior engineer, not as a recitation. " +
+                "Do not add anything else on this first turn — wait for the visitor to respond. " +
+                "If the visitor then replies in a language other than French, continue the rest of the conversation in their language.",
             },
           })
         );
