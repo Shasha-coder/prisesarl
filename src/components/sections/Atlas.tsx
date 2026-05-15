@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/I18nProvider";
 
 /**
  * Atlas — RDC project map.
@@ -43,7 +44,7 @@ const PROJECTS: Project[] = [
   { id: "p12", city: "Kolwezi",    region: "Lualaba",    domain: "telecom",   title: "Audit structurel pylônes mine",   year: "2024", x: 620, y: 670 },
 ];
 
-const FILTERS: { id: Domain | "all"; label: string }[] = [
+const FILTERS_FR: { id: Domain | "all"; label: string }[] = [
   { id: "all",       label: "Tous les projets" },
   { id: "civil",     label: "Génie Civil" },
   { id: "telecom",   label: "Télécoms" },
@@ -65,6 +66,7 @@ const DRC_OUTLINE =
   "M 50 500 L 75 540 L 110 545 L 150 530 L 195 540 L 240 555 L 270 590 L 310 615 L 360 640 L 410 660 L 470 685 L 520 705 L 580 700 L 640 685 L 690 660 L 720 640 L 745 605 L 755 555 L 760 510 L 810 470 L 830 410 L 825 360 L 805 320 L 770 290 L 730 285 L 690 305 L 640 290 L 590 270 L 540 255 L 500 230 L 470 200 L 460 160 L 480 130 L 510 115 L 540 105 L 555 80 L 530 60 L 495 55 L 460 70 L 425 80 L 390 85 L 350 80 L 310 75 L 270 80 L 230 95 L 195 115 L 160 130 L 130 155 L 105 190 L 85 230 L 70 280 L 60 330 L 55 380 L 50 430 Z";
 
 export function Atlas() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const [filter, setFilter] = useState<Domain | "all">("all");
   const [hover, setHover] = useState<string | null>(null);
@@ -160,22 +162,20 @@ export function Atlas() {
           <div>
             <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-gold mb-4">
               <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-gold text-ink text-[10px] tracking-normal">04</span>
-              Atlas RDC
+              {t("atlas.eyebrow")}
             </div>
             <h2 className="font-serif font-semibold text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-[-0.025em]">
-              Là où PRISE <br />
-              <em className="italic text-hot">a déjà posé le pied.</em>
+              {t("atlas.title")}
             </h2>
           </div>
           <p className="text-[16px] text-paper/70 leading-[1.7] max-w-[480px] md:text-right md:ml-auto">
-            Onze provinces, des bâtiments à Matadi aux pylônes de Goma. Filtrez par métier pour
-            voir comment nos cinq spécialités se connectent réellement sur le terrain.
+            {t("atlas.lede")}
           </p>
         </div>
 
         {/* Filter chips */}
         <div className="flex flex-wrap gap-2 mb-10">
-          {FILTERS.map((f) => (
+          {FILTERS_FR.map((f) => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
@@ -186,7 +186,7 @@ export function Atlas() {
                   : "bg-transparent text-paper/70 border-white/15 hover:border-white/40 hover:text-paper"
               )}
             >
-              {f.label}
+              {f.id === "all" ? t("atlas.filter.all") : f.label}
               {f.id !== "all" && (
                 <span
                   className="inline-block w-1.5 h-1.5 rounded-full ml-2 align-middle"

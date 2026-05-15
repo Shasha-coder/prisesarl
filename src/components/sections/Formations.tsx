@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Calendar, Clock, GraduationCap, Users } from "lucide-react";
 import Link from "next/link";
+import { useT } from "@/i18n/I18nProvider";
 
 /**
  * Formations — preview of the professional training catalog.
@@ -57,6 +58,7 @@ const COURSES = [
 ];
 
 export function Formations() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -89,16 +91,14 @@ export function Formations() {
           <div>
             <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-hot mb-4">
               <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-hot text-white text-[10px] tracking-normal">06</span>
-              Catalogue formations
+              {t("formations.eyebrow")}
             </div>
             <h2 className="font-serif font-semibold text-[clamp(34px,4.5vw,56px)] leading-[1.04] tracking-[-0.02em] text-ink">
-              La compétence <br />
-              <em className="italic text-ink-2">reste sur le terrain.</em>
+              {t("formations.title")}
             </h2>
           </div>
           <p className="text-[16px] text-ink-2 max-w-[520px] md:ml-auto md:text-right leading-[1.7]">
-            Nos formations sont conçues par des ingénieurs qui font le métier au quotidien.
-            Certifications ISO 21001, sessions à Kinshasa + provinces, supports en français.
+            {t("formations.lede")}
           </p>
         </div>
 
@@ -157,7 +157,7 @@ export function Formations() {
                 href="#"
                 className="inline-flex items-center gap-1.5 font-semibold text-[13px] text-ink border-b border-ink/40 pb-0.5 self-start mt-2 group-hover:gap-2.5 transition-all"
               >
-                S&apos;inscrire <ArrowRight className="w-3.5 h-3.5" />
+                {t("formations.enroll")} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           ))}
@@ -171,7 +171,7 @@ export function Formations() {
             href="#"
             className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-ink text-paper font-semibold text-sm hover:bg-ink-2 hover:-translate-y-0.5 transition-all"
           >
-            Voir le catalogue complet <ArrowRight className="w-4 h-4" />
+            {t("formations.catalog")} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

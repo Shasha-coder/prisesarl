@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useT } from "@/i18n/I18nProvider";
 
 /**
  * Trust — the "Pourquoi PRISE" strip.
@@ -31,6 +32,7 @@ const REASONS = [
 ];
 
 export function Trust() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const counterRefs = useRef<HTMLSpanElement[]>([]);
 
@@ -89,15 +91,13 @@ export function Trust() {
           <div>
             <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-hot mb-4">
               <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-hot text-white text-[10px] tracking-normal">05</span>
-              Pourquoi PRISE
+              {t("trust.eyebrow")}
             </div>
             <h2 className="font-serif font-semibold text-[clamp(30px,4vw,48px)] leading-[1.05] tracking-[-0.02em] text-ink">
-              Huit raisons, <br />
-              <em className="italic text-ink-2">aucun argumentaire creux.</em>
+              {t("trust.title")}
             </h2>
             <p className="text-[15px] text-ink-2 mt-5 max-w-[400px] leading-[1.65]">
-              Une entreprise d&apos;ingénierie se juge sur ce qui tient après la livraison. Voici ce
-              qui nous distingue, signé en bas de chaque PV.
+              {t("trust.lede")}
             </p>
           </div>
 

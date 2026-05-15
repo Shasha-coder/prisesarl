@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Bot, CheckCircle2, ChevronLeft, Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/I18nProvider";
 
 const STEPS = [
   { id: "domain", question: "Dans quel domaine se situe votre besoin ?" },
@@ -21,9 +22,21 @@ const DOMAIN_OPTIONS = [
 ];
 
 export function IntelligentQuote() {
+  const t = useT();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({ domain: "", details: "", email: "", name: "" });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // The AI agent can pre-select a domain via custom event
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      const opt = DOMAIN_OPTIONS.find((d) => d.id === detail || d.id === detail.slice(0, 3));
+      if (opt) setFormData((s) => ({ ...s, domain: opt.id }));
+    };
+    window.addEventListener("prise:devis-preselect", handler);
+    return () => window.removeEventListener("prise:devis-preselect", handler);
+  }, []);
   
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -95,13 +108,13 @@ export function IntelligentQuote() {
           <div>
             <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-gold mb-4">
               <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-gold text-ink text-[10px] tracking-normal font-bold">AI</span>
-              Concierge intelligent
+              {t("quote.eyebrow")}
             </div>
             <h2 className="font-serif font-semibold text-[clamp(34px,4.5vw,52px)] leading-[1.05] tracking-[-0.02em] text-paper mb-5">
-              Évaluez votre projet<br/>en temps réel.
+              {t("quote.title")}
             </h2>
             <p className="text-base text-paper/70 max-w-[440px] leading-[1.7] mb-8">
-              Oubliez les formulaires interminables. Notre système intelligent qualifie votre besoin, estime les délais et pré-remplit votre dossier pour nos ingénieurs en 3 étapes.
+              {t("quote.lede")}
             </p>
             
             <div className="flex flex-col gap-3.5">
