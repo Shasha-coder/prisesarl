@@ -180,24 +180,38 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
       const dc = pc.createDataChannel("oai-events");
       dcRef.current = dc;
       dc.onopen = () => {
-        // Install Ernest's brain over the live data channel. The /sessions
-        // endpoint rejects some of these fields in the create payload, but
-        // session.update accepts them all.
+        // Install Ernest's brain over the data channel as a redundancy
+        // measure — the create call already includes it, but if a
+        // server-side fallback path was used, this guarantees the model
+        // has its instructions and tools before it generates any audio.
         dc.send(
           JSON.stringify({
             type: "session.update",
             session: {
-              modalities: ["audio", "text"],
               instructions: ERNEST_SYSTEM_PROMPT,
               tools: AGENT_TOOLS,
               tool_choice: "auto",
-              input_audio_transcription: { model: "whisper-1" },
-              turn_detection: {
-                type: "server_vad",
-                threshold: 0.5,
-                prefix_padding_ms: 300,
-                silence_duration_ms: 700,
+              audio: {
+                input: {
+                  transcription: { model: "whisper-1" },
+                  turn_detection: {
+                    type: "server_vad",
+                    threshold: 0.5,
+                    prefix_padding_ms: 300,
+                    silence_duration_ms: 700,
+                  },
+                },
               },
+            },
+          })
+        );
+        // Have Ernest open the conversation — greet and offer a tour.
+        dc.send(
+          JSON.stringify({
+            type: "response.create",
+            response: {
+              instructions:
+                "Greet the visitor warmly in their detected language (default French if unknown). Introduce yourself in one sentence as Ernest, the PRISE Sarl concierge. Then ask EXPLICITLY whether they'd like a guided tour of our services or whether they already have a specific project in mind. Keep it to two sentences.",
             },
           })
         );
