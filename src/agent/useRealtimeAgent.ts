@@ -140,8 +140,9 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
         console.error("[Ernest] session error", tokenJson);
         throw new Error(`Session ${tokenRes.status}: ${detail}`);
       }
-      const ephemeralKey = tokenJson?.client_secret?.value;
-      const model = tokenJson?.model ?? "gpt-4o-realtime-preview-2024-12-17";
+      // GA shape: { value, model, voice }
+      const ephemeralKey: string | undefined = tokenJson?.value;
+      const model: string = tokenJson?.model ?? "gpt-realtime";
       if (!ephemeralKey) throw new Error("Session token missing.");
 
       const pc = new RTCPeerConnection();
@@ -239,7 +240,8 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
 
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      const sdpRes = await fetch(`https://api.openai.com/v1/realtime?model=${encodeURIComponent(model)}`, {
+      // GA SDP exchange — /v1/realtime/calls
+      const sdpRes = await fetch("https://api.openai.com/v1/realtime/calls", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${ephemeralKey}`,
@@ -247,8 +249,15 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
         },
         body: offer.sdp ?? "",
       });
+      if (!sdpRes.ok) {
+        const errText = await sdpRes.text();
+        console.error("[Ernest] SDP exchange failed", sdpRes.status, errText);
+        throw new Error(`SDP ${sdpRes.status}: ${errText.slice(0, 200)}`);
+      }
       const answer = { type: "answer" as const, sdp: await sdpRes.text() };
       await pc.setRemoteDescription(answer);
+      // Touch model so it stays in the closure if we need to surface it
+      void model;
 
       setStatus("listening");
     } catch (err) {
