@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a2240;
+  --color-ink-2: #14315c;
+  --color-ink-3: #1f4480;
+  --color-paper: #f6f1e6;
+  --color-paper-2: #ece4d2;
+  --color-hot: #2BB7DC;
+  --color-hot-2: #4FC8E2;
+  --color-teal: #8FD2CF;
+  --color-gold: #f5b400;
+  --color-steel: #6b7c93;
+  --color-mute: #8a96aa;
+  --color-surface: #f4f6f8;
+  --color-grid: rgba(10,34,64,0.08);
+  --color-grid-strong: rgba(10,34,64,0.18);
+  --color-line: rgba(10,34,64,0.85);
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+
+  --shadow-sm: 0 2px 6px rgba(10,34,64,0.06);
+  --shadow-md: 0 14px 40px -12px rgba(10,34,64,0.18);
+  --shadow-lg: 0 30px 80px -20px rgba(10,34,64,0.32);
+
+  --radius-sm: 6px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-ink font-sans antialiased;
+    overflow-x: hidden;
+  }
+  
+  /* Selection */
+  ::selection {
+    @apply bg-ink text-paper;
+  }
+
+  /* Custom Cursor overrides */
+  html.has-cursor, html.has-cursor * {
+    cursor: none !important;
+  }
+  html.has-cursor input, html.has-cursor textarea, html.has-cursor select {
+    cursor: text !important;
+  }
+}
+
+@layer utilities {
+  .bg-blueprint {
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  
+  .bg-blueprint-sm {
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .bg-blueprint-dark {
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .mask-radial {
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 35%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 35%, transparent 75%);
+  }
+  
+  .mask-radial-top {
+    mask-image: radial-gradient(circle at 70% 30%, #000, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at 70% 30%, #000, transparent 70%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  @keyframes slideRight {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes slideLeft {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes slideDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  @keyframes slideUp {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
+}
+
+/* Domain icon SVG draw-on-hover */
+.domain-icon-wrap svg {
+  stroke-dashoffset: 600;
+  transition: stroke-dashoffset 1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.group:hover .domain-icon-wrap svg {
+  stroke-dashoffset: 0;
+}
+
+/* WhatsApp floating button */
+@keyframes waPulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
