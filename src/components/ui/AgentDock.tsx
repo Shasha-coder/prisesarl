@@ -3,10 +3,11 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Mic, MicOff, Minus, Send, Sparkles, X } from "lucide-react";
+import { Mic, MicOff, Minus, Send, X } from "lucide-react";
 import { useRealtimeAgent } from "@/agent/useRealtimeAgent";
 import { useI18n } from "@/i18n/I18nProvider";
 import { AvatarSVG } from "@/agent/AvatarSVG";
+import { AgentLauncher } from "@/components/ui/AgentLauncher";
 
 // Defer three.js — it's ~600 KB. Only load when the panel opens.
 const Avatar3D = dynamic(() => import("@/agent/Avatar").then((m) => m.Avatar), {
@@ -64,20 +65,12 @@ export function AgentDock() {
 
   return (
     <>
-      {/* Floating launcher */}
-      <button
+      {/* Floating launcher — animated compass-face mark */}
+      <AgentLauncher
         onClick={() => { setOpen(true); setMinimized(false); }}
-        className={cn(
-          "fixed right-[22px] bottom-[90px] z-[55] w-[60px] h-[60px] rounded-full grid place-items-center text-white transition-all duration-300",
-          "bg-gradient-to-br from-ink via-ink-3 to-hot shadow-[0_14px_32px_-8px_rgba(43,183,220,0.55)]",
-          open ? "scale-0 opacity-0 pointer-events-none" : "hover:scale-[1.06]"
-        )}
-        aria-label="Ouvrir Ernest, concierge PRISE"
-      >
-        <Sparkles className="w-6 h-6" />
-        <span className="absolute inset-[-6px] rounded-full border-2 border-hot/40 animate-[waPulse_2.4s_ease-out_infinite]" />
-        <span className="absolute -top-1.5 -right-1.5 w-3 h-3 rounded-full bg-gold border-2 border-paper" />
-      </button>
+        hidden={open}
+        ariaLabel={t("agent.title")}
+      />
 
       {/* Panel */}
       <div

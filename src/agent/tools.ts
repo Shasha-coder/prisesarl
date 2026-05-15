@@ -25,6 +25,30 @@ export const AGENT_TOOLS = [
   },
   {
     type: "function" as const,
+    name: "tour_sections",
+    description:
+      "Take the visitor on a guided tour through several sections in order. The page will scroll smoothly to each and pause so you can describe it. Use when the visitor wants an overview, or when they say they don't know what they need.",
+    parameters: {
+      type: "object",
+      properties: {
+        sections: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: ["hero", "domains", "methode", "projets", "pourquoi", "formations", "devis"],
+          },
+          description: "Section ids to visit in order. 2–5 sections is typical.",
+        },
+        dwell_ms: {
+          type: "number",
+          description: "Milliseconds to wait at each section. Default 4200. Use shorter (~3000) for fast-paced overviews.",
+        },
+      },
+      required: ["sections"],
+    },
+  },
+  {
+    type: "function" as const,
     name: "highlight_domain",
     description:
       "Briefly pulse one of the five domain cards so the visitor's eye lands on it while you describe it.",

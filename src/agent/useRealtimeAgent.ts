@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   scrollToSection,
+  tourSections,
   highlightDomain,
   setLanguage,
   openDevisForm,
@@ -86,6 +87,11 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
     switch (name) {
       case "scroll_to_section":
         return scrollToSection(String(args.target ?? "hero"));
+      case "tour_sections":
+        return tourSections(
+          Array.isArray(args.sections) ? (args.sections as string[]) : ["hero"],
+          typeof args.dwell_ms === "number" ? (args.dwell_ms as number) : 4200
+        );
       case "highlight_domain":
         return highlightDomain(String(args.domain) as "civil" | "telecom" | "energy" | "logistics" | "training");
       case "set_language":

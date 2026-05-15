@@ -24,7 +24,22 @@ export function scrollToSection(target: string) {
   const el = typeof document !== "undefined" ? document.querySelector(sel) : null;
   if (!el) return `Section ${target} introuvable.`;
   el.scrollIntoView({ behavior: "smooth", block: "start" });
+  // Brief arrival flash so the visitor's eye lands cleanly.
+  (el as HTMLElement).classList.add("agent-arrived");
+  window.setTimeout(() => (el as HTMLElement).classList.remove("agent-arrived"), 1400);
   return `Scrolled to ${target}.`;
+}
+
+/**
+ * Walk the visitor through multiple sections in sequence with a pause at each
+ * so Ernest has time to narrate before moving on.
+ */
+export async function tourSections(sections: string[], dwellMs = 4200): Promise<string> {
+  for (const sec of sections) {
+    scrollToSection(sec);
+    await new Promise((resolve) => window.setTimeout(resolve, dwellMs));
+  }
+  return `Toured ${sections.length} sections.`;
 }
 
 export function highlightDomain(domain: Domain) {
