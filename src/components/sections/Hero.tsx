@@ -6,20 +6,22 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { BlueprintStage } from "@/components/sections/BlueprintStage";
+import { useT } from "@/i18n/I18nProvider";
 
 type DomainId = "civil" | "telecom" | "energy" | "logistics" | "training";
 
-const DOMAINS: { id: DomainId; label: string; tag: string }[] = [
-  { id: "civil",     label: "Génie Civil",       tag: "Bâti" },
-  { id: "telecom",   label: "Télécoms",          tag: "Réseau" },
-  { id: "energy",    label: "Énergie",           tag: "Watts" },
-  { id: "logistics", label: "Logistique",        tag: "Flotte" },
-  { id: "training",  label: "Formations",        tag: "Compétence" },
+const DOMAINS: { id: DomainId; labelFR: string; labelEN: string; tag: string }[] = [
+  { id: "civil",     labelFR: "Génie Civil",  labelEN: "Civil",     tag: "Bâti" },
+  { id: "telecom",   labelFR: "Télécoms",     labelEN: "Telecom",   tag: "Réseau" },
+  { id: "energy",    labelFR: "Énergie",      labelEN: "Energy",    tag: "Watts" },
+  { id: "logistics", labelFR: "Logistique",   labelEN: "Logistics", tag: "Flotte" },
+  { id: "training",  labelFR: "Formations",   labelEN: "Training",  tag: "Skill" },
 ];
 
 export function Hero() {
+  const t = useT();
   const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<DomainId>("civil");
   const [autoplay, setAutoplay] = useState(true);
@@ -55,35 +57,47 @@ export function Hero() {
     };
   }, []);
 
-  // Headline entrance.
+  // Kinetic headline entrance — words rise + blur clears, ink strokes draw under verbs
   useEffect(() => {
-    const words = textRef.current?.querySelectorAll(".word");
-    if (!words) return;
-    gsap.fromTo(
-      words,
-      { opacity: 0, y: 38, rotateX: -22 },
-      {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        duration: 0.9,
-        stagger: 0.07,
-        ease: "power3.out",
-        delay: 0.2,
-      }
-    );
-  }, []);
+    const title = titleRef.current;
+    if (!title) return;
 
-  // Autoplay cycle.
+    const words = title.querySelectorAll<HTMLElement>("[data-word]");
+    const strokes = title.querySelectorAll<SVGPathElement>("[data-ink]");
+
+    gsap.set(words, { opacity: 0, y: 40, filter: "blur(8px)" });
+    gsap.set(strokes, { strokeDasharray: 200, strokeDashoffset: 200 });
+
+    const tl = gsap.timeline({ delay: 0.25 });
+    tl.to(words, {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      duration: 0.95,
+      stagger: 0.08,
+      ease: "power3.out",
+    });
+    tl.to(
+      strokes,
+      {
+        strokeDashoffset: 0,
+        duration: 1.0,
+        stagger: 0.12,
+        ease: "power2.inOut",
+      },
+      "-=0.6"
+    );
+  }, [t]); // re-run on language change to redraw
+
   useEffect(() => {
     if (!autoplay) return;
-    const t = window.setTimeout(() => {
+    const id = window.setTimeout(() => {
       setActive((curr) => {
         const i = DOMAINS.findIndex((d) => d.id === curr);
         return DOMAINS[(i + 1) % DOMAINS.length].id;
       });
     }, 5200);
-    return () => window.clearTimeout(t);
+    return () => window.clearTimeout(id);
   }, [active, autoplay]);
 
   const activeIndex = DOMAINS.findIndex((d) => d.id === active);
@@ -92,40 +106,45 @@ export function Hero() {
     <section
       ref={containerRef}
       className="relative min-h-screen pt-[120px] pb-[60px] overflow-hidden flex items-center bg-paper bg-paper-grain"
-      aria-label="Hero blueprint"
+      aria-label="Hero"
     >
-      {/* Coarse grid */}
       <div className="absolute inset-0 bg-blueprint mask-radial opacity-90 pointer-events-none" />
-      {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_12%_18%,rgba(0,0,0,0.04),transparent_45%),radial-gradient(circle_at_92%_86%,rgba(0,0,0,0.05),transparent_45%)]" />
 
       <div className="max-w-[1280px] mx-auto px-5 sm:px-7 w-full grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center relative z-10">
 
-        {/* Left copy */}
         <div>
           <div className="inline-flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.24em] uppercase text-ink-2 mb-7 px-3.5 py-1.5 border border-grid-strong rounded-full bg-white/40 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-hot shadow-[0_0_0_4px_rgba(43,183,220,0.18)] animate-pulse" />
-            Kinshasa · RDC · est. 2013
+            {t("hero.eyebrow")}
           </div>
 
+          {/* Headline — kinetic + ink underlines on the four verbs */}
           <h1
-            ref={textRef}
-            className="font-serif font-semibold text-[clamp(40px,6.4vw,86px)] leading-[1.0] tracking-[-0.025em] text-ink mb-7"
+            ref={titleRef}
+            key={t("hero.title.line1a")}
+            className="font-serif font-semibold text-[clamp(40px,6.4vw,86px)] leading-[1.0] tracking-[-0.025em] text-ink mb-8"
           >
-            <span className="word inline-block origin-bottom-left">Construire,</span>{" "}
-            <span className="word inline-block origin-bottom-left">connecter,</span>
+            <span className="inline-flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <Verb word={t("hero.title.line1a")} />
+              <Verb word={t("hero.title.line1b")} />
+            </span>
             <br />
-            <span className="word inline-block origin-bottom-left">alimenter,</span>{" "}
-            <span className="word inline-block origin-bottom-left">former</span>
+            <span className="inline-flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <Verb word={t("hero.title.line2a")} />
+              <Verb word={t("hero.title.line2b")} />
+            </span>
             <br />
-            <span className="word inline-block origin-bottom-left text-ink-2 italic font-serif">
-              — l&apos;avenir, par étapes mesurées.
+            <span
+              data-word
+              className="inline-block font-serif italic text-ink-2 text-[clamp(26px,3.6vw,52px)] tracking-[-0.01em] mt-2"
+            >
+              {t("hero.title.line3")}
             </span>
           </h1>
 
           <p className="text-lg text-ink-2 max-w-[540px] mb-9 leading-[1.62]">
-            PRISE Sarl conçoit, bâtit et opère les infrastructures qui tiennent l&apos;Afrique
-            centrale en marche — du plan coté au chantier livré, sans sous-traitance déguisée.
+            {t("hero.lede")}
           </p>
 
           <div className="flex flex-wrap gap-3.5 mb-12">
@@ -133,50 +152,47 @@ export function Hero() {
               href="#devis"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-hot text-white font-semibold text-sm tracking-[0.01em] shadow-[0_8px_24px_-6px_rgba(43,183,220,0.55)] hover:bg-hot-2 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(43,183,220,0.65)] transition-all duration-300"
             >
-              Demander un devis <ArrowRight className="w-4 h-4" />
+              {t("hero.cta.devis")} <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="#services"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-transparent text-ink font-semibold text-sm tracking-[0.01em] border border-grid-strong hover:bg-ink hover:text-paper hover:border-ink transition-all duration-300"
             >
-              Découvrir nos cinq métiers
+              {t("hero.cta.services")}
             </Link>
           </div>
 
           <div className="flex flex-wrap gap-8 items-center text-ink-2">
             {[
-              { num: "12+", label: "années d'expertise" },
-              { num: "5",   label: "domaines intégrés" },
-              { num: "120+", label: "projets livrés" },
-              { num: "9/10", label: "clients récurrents" },
+              { num: "12+",  key: "hero.stat.years" as const },
+              { num: "5",    key: "hero.stat.domains" as const },
+              { num: "120+", key: "hero.stat.projects" as const },
+              { num: "9/10", key: "hero.stat.retention" as const },
             ].map((stat) => (
-              <div key={stat.label} className="flex flex-col">
+              <div key={stat.key} className="flex flex-col">
                 <strong className="font-serif text-[34px] text-ink leading-none">{stat.num}</strong>
-                <span className="text-[10.5px] tracking-[0.18em] uppercase text-mute mt-1.5">{stat.label}</span>
+                <span className="text-[10.5px] tracking-[0.18em] uppercase text-mute mt-1.5">
+                  {t(stat.key)}
+                </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right stage — BlueprintStage handles all the drawing */}
         <div className="relative">
           <div ref={stageWrapRef} className="transition-transform duration-500 will-change-transform">
             <BlueprintStage active={active} />
           </div>
 
-          {/* Domain switcher chips — outside the stage so 3D tilt doesn't catch them */}
           <div
             className="mt-5 flex items-center justify-center gap-1.5 sm:gap-2 px-2 py-2 bg-ink rounded-full mx-auto w-fit shadow-md"
             role="tablist"
-            aria-label="Choix du domaine en cours de tracé"
+            aria-label="Domaine en cours de tracé"
           >
             {DOMAINS.map((d, i) => (
               <button
                 key={d.id}
-                onClick={() => {
-                  setActive(d.id);
-                  setAutoplay(false);
-                }}
+                onClick={() => { setActive(d.id); setAutoplay(false); }}
                 role="tab"
                 aria-selected={active === d.id}
                 className={cn(
@@ -186,22 +202,49 @@ export function Hero() {
                     : "text-white/55 hover:text-white"
                 )}
               >
-                0{i + 1} · {d.label}
+                0{i + 1} · {d.labelFR}
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Bottom plate ticker */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 text-[11px] font-semibold tracking-[0.28em] uppercase text-ink-2 z-[3]">
-        <span className="opacity-50">Plan en cours ·</span>
+        <span className="opacity-50">{t("hero.ticker")} ·</span>
         <span className="text-ink border-b border-ink pb-0.5 transition-all">
-          {DOMAINS[activeIndex].label}
+          {DOMAINS[activeIndex].labelFR}
         </span>
         <span className="opacity-50">/</span>
         <span className="text-ink-2 font-normal">{DOMAINS[activeIndex].tag}</span>
       </div>
     </section>
+  );
+}
+
+/**
+ * A headline verb with a hand-drawn ink stroke that draws beneath it.
+ * The stroke uses a slightly imperfect path so it reads as ink on paper,
+ * not as a CSS underline.
+ */
+function Verb({ word }: { word: string }) {
+  return (
+    <span className="relative inline-block">
+      <span data-word className="inline-block">{word}</span>
+      <svg
+        className="absolute -bottom-1 left-0 right-0 w-full h-[10px] pointer-events-none"
+        viewBox="0 0 200 10"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          data-ink
+          d="M 4 6 Q 50 1, 100 4 T 196 5"
+          fill="none"
+          stroke="var(--color-hot)"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+      </svg>
+    </span>
   );
 }

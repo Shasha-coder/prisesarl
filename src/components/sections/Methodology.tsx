@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useT } from "@/i18n/I18nProvider";
 
 /**
  * Methodology — six-stage process flow.
@@ -105,6 +106,7 @@ const STAGES = [
 ];
 
 export function Methodology() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const spineRef = useRef<SVGPathElement>(null);
   const stagesRef = useRef<(HTMLLIElement | null)[]>([]);
@@ -168,18 +170,14 @@ export function Methodology() {
           <div>
             <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-hot mb-4">
               <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-hot text-white text-[10px] tracking-normal">03</span>
-              Méthode
+              {t("method.eyebrow")}
             </div>
             <h2 className="font-serif font-semibold text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-[-0.025em] text-ink">
-              Du plan coté <br />au chantier livré, <br />
-              <em className="text-ink-2 italic">en six gestes propres.</em>
+              {t("method.title")}
             </h2>
           </div>
           <p className="text-[17px] text-ink-2 leading-[1.7] max-w-[540px] md:ml-auto md:text-right">
-            Aucun projet ne quitte le bureau d&apos;études sans plan signé. Aucun chantier ne ferme
-            sans procès-verbal contradictoire. Notre méthode tient parce qu&apos;elle est répétable —
-            c&apos;est la même que vous traitiez avec nous pour un pylône à Mbuji-Mayi ou un
-            bâtiment à Goma.
+            {t("method.lede")}
           </p>
         </div>
 

@@ -219,3 +219,23 @@
 .pin-ring {
   animation: pinPulse 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
+/* Agent-driven highlight pulse on domain cards */
+@keyframes agentPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(43,183,220,0);
+    transform: translateY(-2px);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(43,183,220,0.18), 0 14px 40px -12px rgba(43,183,220,0.45);
+    transform: translateY(-6px);
+  }
+}
+.agent-pulse {
+  animation: agentPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) 2;
+  outline: 2px solid var(--color-hot);
+  outline-offset: 4px;
+  border-radius: 0.75rem;
+  position: relative;
+  z-index: 10;
+}

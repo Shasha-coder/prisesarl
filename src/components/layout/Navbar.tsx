@@ -4,19 +4,21 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/i18n/I18nProvider";
+import type { TKey } from "@/i18n/dictionary";
 
-const NAV_LINKS = [
-  { href: "#services",   fr: "Services",    en: "Services" },
-  { href: "#methode",    fr: "Méthode",     en: "Method" },
-  { href: "#projets",    fr: "Projets",     en: "Projects" },
-  { href: "#pourquoi",   fr: "Pourquoi PRISE", en: "Why us" },
-  { href: "#formations", fr: "Formations",  en: "Training" },
+const NAV_LINKS: { href: string; key: TKey }[] = [
+  { href: "#services",   key: "nav.services" },
+  { href: "#methode",    key: "nav.methode" },
+  { href: "#projets",    key: "nav.projets" },
+  { href: "#pourquoi",   key: "nav.pourquoi" },
+  { href: "#formations", key: "nav.formations" },
 ];
 
 export function Navbar() {
+  const { t, lang, setLang } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lang, setLang] = useState<"fr" | "en">("fr");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -60,7 +62,7 @@ export function Navbar() {
                 href={item.href}
                 className="relative py-1.5 text-ink-2 hover:text-ink transition-colors group"
               >
-                {lang === "fr" ? item.fr : item.en}
+                {t(item.key)}
                 <span className="absolute left-0 right-0 bottom-0 h-px bg-ink scale-x-0 origin-right transition-transform duration-300 ease-out group-hover:scale-x-100 group-hover:origin-left" />
               </Link>
             ))}
@@ -92,7 +94,7 @@ export function Navbar() {
               href="#devis"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-hot text-white font-semibold text-sm tracking-[0.01em] shadow-[0_8px_24px_-6px_rgba(43,183,220,0.55)] hover:bg-hot-2 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(43,183,220,0.65)] transition-all duration-300"
             >
-              {lang === "fr" ? "Demander un devis" : "Request a quote"} <ArrowRight className="w-4 h-4" />
+              {t("nav.devis")} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -128,7 +130,7 @@ export function Navbar() {
               className="text-3xl font-serif font-semibold py-3 border-b border-white/10 hover:text-hot transition-colors"
               onClick={() => setMenuOpen(false)}
             >
-              {lang === "fr" ? item.fr : item.en}
+              {t(item.key)}
             </Link>
           ))}
           <Link
@@ -136,7 +138,7 @@ export function Navbar() {
             onClick={() => setMenuOpen(false)}
             className="mt-6 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-hot text-white font-semibold text-base"
           >
-            {lang === "fr" ? "Demander un devis" : "Request a quote"} <ArrowRight className="w-4 h-4" />
+            {t("nav.devis")} <ArrowRight className="w-4 h-4" />
           </Link>
           <div className="flex items-center gap-1 text-xs font-semibold tracking-[0.08em] text-paper/60 mt-8">
             <button onClick={() => setLang("fr")} className={cn("px-3 py-2 rounded", lang === "fr" ? "bg-white/10 text-paper" : "")}>FR</button>

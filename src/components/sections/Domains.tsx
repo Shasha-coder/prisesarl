@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/I18nProvider";
 
 const DOMAINS_DATA = [
   {
@@ -86,6 +87,7 @@ const DOMAINS_DATA = [
 ];
 
 export function Domains() {
+  const t = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -123,16 +125,15 @@ export function Domains() {
           <div>
             <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-hot mb-4">
               <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-hot text-white text-[10px] tracking-normal">02</span>
-              Nos domaines
+              {t("domains.eyebrow")}
             </div>
             <h2 className="font-serif font-semibold text-[clamp(32px,4.5vw,56px)] leading-[1.04] tracking-[-0.02em] text-ink">
-              Cinq métiers,<br/>une seule équipe<br/>
-              <em className="text-ink-2 italic">de bout en bout.</em>
+              {t("domains.title")}
             </h2>
           </div>
           <div>
             <p className="text-[17px] text-ink-2 max-w-[520px] leading-[1.65]">
-              Du dimensionnement à la mise en service, PRISE intègre l&apos;ensemble de la chaîne : études techniques, construction, télécommunications, énergie, logistique chantier et formation des équipes locales. Un interlocuteur, une responsabilité.
+              {t("domains.lede")}
             </p>
           </div>
         </div>
@@ -172,7 +173,7 @@ export function Domains() {
               </div>
 
               <div className="inline-flex items-center gap-2 mt-4.5 font-semibold text-[13px] text-ink border-b border-ink pb-0.5 self-start group-hover:gap-3.5 transition-all relative z-10">
-                En savoir plus <ArrowRight className="w-3.5 h-3.5" />
+                {t("domains.more")} <ArrowRight className="w-3.5 h-3.5" />
               </div>
 
               {/* Animated Blueprint Icon */}
