@@ -25,6 +25,8 @@ interface Props {
   active: boolean;
   /** Tailwind className for the wrapper */
   className?: string;
+  /** Called when the GLB fails to load so the parent can show a fallback. */
+  onLoadError?: () => void;
 }
 
 const DEFAULT_AVATAR =
@@ -32,8 +34,10 @@ const DEFAULT_AVATAR =
   // Public Ready Player Me sample (half-body w/ morph targets). Replace via env.
   "https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.glb?morphTargets=ARKit,Oculus%20Visemes&textureAtlas=512";
 
-export function Avatar({ audioLevel, active, className }: Props) {
+export function Avatar({ audioLevel, active, className, onLoadError }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const onLoadErrorRef = useRef(onLoadError);
+  useEffect(() => { onLoadErrorRef.current = onLoadError; });
 
   // Stable refs across renders (updated in an effect to satisfy
   // react-hooks/refs which forbids ref writes during render).
@@ -147,8 +151,10 @@ export function Avatar({ audioLevel, active, className }: Props) {
         head = root.getObjectByName("Head") || root.getObjectByName("Wolf3D_Head") || null;
       },
       undefined,
-      () => {
-        // Loader error → leave the canvas empty + show fallback later
+      (err) => {
+        // Loader error (DNS, 404, CORS, malformed GLB). Trigger parent fallback.
+        console.warn("[Ernest avatar] GLB load failed:", err);
+        onLoadErrorRef.current?.();
       }
     );
 

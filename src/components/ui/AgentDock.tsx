@@ -6,11 +6,12 @@ import { cn } from "@/lib/utils";
 import { Mic, MicOff, Minus, Send, Sparkles, X } from "lucide-react";
 import { useRealtimeAgent } from "@/agent/useRealtimeAgent";
 import { useI18n } from "@/i18n/I18nProvider";
+import { AvatarSVG } from "@/agent/AvatarSVG";
 
 // Defer three.js — it's ~600 KB. Only load when the panel opens.
-const Avatar = dynamic(() => import("@/agent/Avatar").then((m) => m.Avatar), {
+const Avatar3D = dynamic(() => import("@/agent/Avatar").then((m) => m.Avatar), {
   ssr: false,
-  loading: () => <AvatarFallback />,
+  loading: () => <AvatarLoading />,
 });
 
 /**
@@ -26,6 +27,7 @@ export function AgentDock() {
   const [minimized, setMinimized] = useState(false);
   const [mode, setMode] = useState<"voice" | "text">("voice");
   const [text, setText] = useState("");
+  const [glbFailed, setGlbFailed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { status, transcript, audioLevel, error, start, stop, sendText } = useRealtimeAgent();
@@ -134,11 +136,20 @@ export function AgentDock() {
               {mode === "voice" && (
                 <div className="relative mx-4 mt-3 h-[210px] rounded-xl overflow-hidden bg-gradient-to-b from-paper-2 to-paper-3 shadow-inner">
                   <div className="absolute inset-0 bg-blueprint-xs opacity-50 pointer-events-none" />
-                  <Avatar
-                    audioLevel={audioLevel}
-                    active={status === "listening" || status === "speaking"}
-                    className="absolute inset-0"
-                  />
+                  {glbFailed ? (
+                    <AvatarSVG
+                      audioLevel={audioLevel}
+                      active={status === "listening" || status === "speaking"}
+                      className="absolute inset-0 w-full h-full"
+                    />
+                  ) : (
+                    <Avatar3D
+                      audioLevel={audioLevel}
+                      active={status === "listening" || status === "speaking"}
+                      className="absolute inset-0"
+                      onLoadError={() => setGlbFailed(true)}
+                    />
+                  )}
                   <div className="absolute left-3 bottom-2 right-3 flex items-center justify-between text-[10px] font-mono tracking-[0.22em] uppercase text-ink-2/70">
                     <span>Ernest · live</span>
                     <span>{statusLabel}</span>
@@ -240,7 +251,7 @@ function ModeButton({ active, onClick, children }: { active: boolean; onClick: (
   );
 }
 
-function AvatarFallback() {
+function AvatarLoading() {
   return (
     <div className="absolute inset-0 grid place-items-center">
       <div className="w-16 h-16 rounded-full border-2 border-hot/40 border-t-hot animate-spin" />

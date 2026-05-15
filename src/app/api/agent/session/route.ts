@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
-import { ERNEST_SYSTEM_PROMPT } from "@/agent/system-prompt";
-import { AGENT_TOOLS } from "@/agent/tools";
 
 /**
  * POST /api/agent/session
  *
- * Mints an ephemeral Realtime API session for the browser, baking in
- * Ernest's system prompt and tool list so the model has everything it
- * needs from the first audio frame.
+ * Mints an ephemeral Realtime API session for the browser. We keep the
+ * create payload minimal — only model + voice — because OpenAI's
+ * /v1/realtime/sessions endpoint rejects some field combinations that
+ * are perfectly valid over the data channel. Instructions, tools and
+ * turn detection are applied client-side via a session.update event
+ * after the WebRTC data channel opens.
  *
- * Requires env: OPENAI_API_KEY.
- * Optional env: OPENAI_REALTIME_MODEL (defaults to "gpt-realtime").
+ * Required env: OPENAI_API_KEY
+ * Optional env:
+ *   OPENAI_REALTIME_MODEL (default: gpt-4o-realtime-preview-2024-12-17)
+ *   OPENAI_REALTIME_VOICE (default: alloy)
  */
 export async function POST() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -21,7 +24,9 @@ export async function POST() {
     );
   }
 
-  const model = process.env.OPENAI_REALTIME_MODEL || "gpt-realtime";
+  const model =
+    process.env.OPENAI_REALTIME_MODEL || "gpt-4o-realtime-preview-2024-12-17";
+  const voice = process.env.OPENAI_REALTIME_VOICE || "alloy";
 
   try {
     const res = await fetch("https://api.openai.com/v1/realtime/sessions", {
@@ -29,26 +34,23 @@ export async function POST() {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        "OpenAI-Beta": "realtime=v1",
       },
-      body: JSON.stringify({
-        model,
-        // Default to a warm, neutral voice — model picks language at speak time
-        voice: "alloy",
-        instructions: ERNEST_SYSTEM_PROMPT,
-        modalities: ["audio", "text"],
-        tools: AGENT_TOOLS,
-        tool_choice: "auto",
-        input_audio_transcription: { model: "whisper-1" },
-        turn_detection: { type: "server_vad", threshold: 0.5, silence_duration_ms: 700 },
-      }),
+      body: JSON.stringify({ model, voice }),
     });
 
+    const text = await res.text();
     if (!res.ok) {
-      const text = await res.text();
-      return NextResponse.json({ error: text }, { status: res.status });
+      // Bubble the upstream error body up to the browser console so
+      // misconfiguration (wrong model name, no API access, etc.) is visible.
+      console.error("[/api/agent/session] OpenAI", res.status, text);
+      return NextResponse.json(
+        { error: "openai_error", status: res.status, detail: text, model },
+        { status: res.status }
+      );
     }
 
-    const data = await res.json();
+    const data = JSON.parse(text);
     return NextResponse.json({ ...data, model });
   } catch (err) {
     return NextResponse.json(
