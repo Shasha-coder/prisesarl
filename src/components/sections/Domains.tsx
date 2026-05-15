@@ -132,7 +132,7 @@ export function Domains() {
           </div>
           <div>
             <p className="text-[17px] text-ink-2 max-w-[520px] leading-[1.65]">
-              Du dimensionnement à la mise en service, PRISE intègre l'ensemble de la chaîne : études techniques, construction, télécommunications, énergie, logistique chantier et formation des équipes locales. Un interlocuteur, une responsabilité.
+              Du dimensionnement à la mise en service, PRISE intègre l&apos;ensemble de la chaîne : études techniques, construction, télécommunications, énergie, logistique chantier et formation des équipes locales. Un interlocuteur, une responsabilité.
             </p>
           </div>
         </div>

@@ -54,7 +54,7 @@ export function Footer() {
             <ul className="flex flex-col gap-4">
               <li className="flex items-start gap-3 text-paper/70">
                 <MapPin className="w-4 h-4 mt-0.5 text-hot" />
-                <span className="text-[13px] leading-tight">Kinshasa, RDC<br/>Avenue de l'Avenir</span>
+                <span className="text-[13px] leading-tight">Kinshasa, RDC<br/>Avenue de l&apos;Avenir</span>
               </li>
               <li className="flex items-start gap-3 text-paper/70">
                 <Phone className="w-4 h-4 mt-0.5 text-hot" />
