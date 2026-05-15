@@ -25,7 +25,10 @@ export async function POST() {
   }
 
   const model = process.env.OPENAI_REALTIME_MODEL || "gpt-realtime";
-  const voice = process.env.OPENAI_REALTIME_VOICE || "marin";
+  // "cedar" is the GA male voice — warm, charismatic, professional.
+  // Alternates if you want to A/B: "onyx" (deeper, more formal),
+  // "echo" (lighter), "verse" (more expressive). Override via env.
+  const voice = process.env.OPENAI_REALTIME_VOICE || "cedar";
 
   const sessionConfig = {
     type: "realtime",
