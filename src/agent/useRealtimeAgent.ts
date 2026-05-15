@@ -179,11 +179,31 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
 
       const dc = pc.createDataChannel("oai-events");
       dcRef.current = dc;
+
+      let hasGreeted = false;
+      const triggerGreeting = () => {
+        if (hasGreeted || dc.readyState !== "open") return;
+        hasGreeted = true;
+        dc.send(
+          JSON.stringify({
+            type: "response.create",
+            response: {
+              instructions:
+                "Open the conversation NOW by speaking aloud, warmly and naturally in French: " +
+                "« Bonjour et bienvenue chez PRISE Sarl. Je suis Ernest, votre concierge. Comment puis-je vous aider aujourd'hui ? » " +
+                "Deliver it with the calm, charismatic confidence of a senior engineer — not as a recitation. " +
+                "Stop after that question. Wait for the visitor to respond. " +
+                "If they reply in another language, continue in their language.",
+            },
+          })
+        );
+      };
+
       dc.onopen = () => {
-        // Install Ernest's brain over the data channel as a redundancy
-        // measure — the create call already includes it, but if a
-        // server-side fallback path was used, this guarantees the model
-        // has its instructions and tools before it generates any audio.
+        // Push the brain over the data channel for redundancy (the
+        // create call already included it, but only if it wasn't
+        // rejected — the server signals brainInjected:false in that
+        // case but we send unconditionally to be safe).
         dc.send(
           JSON.stringify({
             type: "session.update",
@@ -205,28 +225,27 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
             },
           })
         );
-        // Have Ernest open the conversation immediately with a concrete
-        // French greeting. He keeps speaking French unless the visitor
-        // replies in another language.
-        dc.send(
-          JSON.stringify({
-            type: "response.create",
-            response: {
-              instructions:
-                "Open the conversation NOW by speaking aloud the following greeting in warm, natural French: " +
-                "« Bonjour et bienvenue chez PRISE Sarl. Je suis Ernest, votre concierge. Comment puis-je vous aider aujourd'hui ? » " +
-                "Speak it with the calm, charismatic confidence of a senior engineer, not as a recitation. " +
-                "Do not add anything else on this first turn — wait for the visitor to respond. " +
-                "If the visitor then replies in a language other than French, continue the rest of the conversation in their language.",
-            },
-          })
-        );
+
+        // Fallback: if the server never confirms session.updated within
+        // 1.5 s (some accounts don't emit it), trigger greeting anyway.
+        window.setTimeout(triggerGreeting, 1500);
         setStatus("listening");
       };
+
+      // The dc.onmessage handler below will also call triggerGreeting()
+      // as soon as session.updated arrives — whichever fires first wins,
+      // and the hasGreeted guard prevents a double greeting.
+      (dc as RTCDataChannel & { __triggerGreeting?: () => void }).__triggerGreeting = triggerGreeting;
       dc.onmessage = (e) => {
         let evt: { type?: string;[k: string]: unknown };
         try { evt = JSON.parse(e.data); } catch { return; }
         const type = evt?.type ?? "";
+
+        // Trigger Ernest's opening greeting the moment the server
+        // confirms our session.update was applied.
+        if (type === "session.updated" || type === "session.created") {
+          (dc as RTCDataChannel & { __triggerGreeting?: () => void }).__triggerGreeting?.();
+        }
 
         if (type === "response.audio_transcript.delta" || type === "response.text.delta") {
           const delta = String(evt.delta ?? "");
