@@ -95,16 +95,12 @@ export function AvatarSVG({ audioLevel, active, className }: Props) {
   return (
     <svg
       viewBox="0 0 240 240"
+      preserveAspectRatio="xMidYMid meet"
       className={className}
       role="img"
       aria-label="Ernest, présence vocale"
     >
       <defs>
-        <radialGradient id="presenceBg" cx="0.5" cy="0.5" r="0.55">
-          <stop offset="0%" stopColor="#102648" />
-          <stop offset="60%" stopColor="#0a2240" />
-          <stop offset="100%" stopColor="#061533" />
-        </radialGradient>
         <radialGradient id="presenceCore" cx="0.5" cy="0.4" r="0.6">
           <stop offset="0%" stopColor="#bff0ff" />
           <stop offset="55%" stopColor="#4FC8E2" />
@@ -123,39 +119,10 @@ export function AvatarSVG({ audioLevel, active, className }: Props) {
         </filter>
       </defs>
 
-      {/* Background */}
-      <rect x="0" y="0" width="240" height="240" fill="url(#presenceBg)" />
-
-      {/* Faint blueprint grid */}
-      <g stroke="rgba(246,241,230,0.04)" strokeWidth="0.4">
-        {[20, 60, 100, 140, 180, 220].map((p) => (
-          <g key={p}>
-            <line x1={p} y1="0" x2={p} y2="240" />
-            <line x1="0" y1={p} x2="240" y2={p} />
-          </g>
-        ))}
-      </g>
-
-      {/* Corner blueprint marks */}
-      <g stroke="rgba(246,241,230,0.4)" strokeWidth="0.7" fill="none">
-        <path d="M 10 18 L 18 18 L 18 10" />
-        <path d="M 230 18 L 222 18 L 222 10" />
-        <path d="M 10 222 L 18 222 L 18 230" />
-        <path d="M 230 222 L 222 222 L 222 230" />
-      </g>
-
-      {/* Dimension callouts */}
-      <g fontFamily="var(--font-mono, monospace)" fontSize="6.5" letterSpacing="1.6" fill="rgba(246,241,230,0.55)">
-        <text x="14" y="14">ERN-01</text>
-        <text x="226" y="14" textAnchor="end">LIVE</text>
-        <text x="14" y="232">CH·01</text>
-        <text x="226" y="232" textAnchor="end">PRISE·SARL</text>
-      </g>
-
       {/* Outer expanding pulse */}
       <circle ref={pulseRef} cx="120" cy="120" r="56" fill="none" stroke="#2BB7DC" strokeWidth="0.9" />
 
-      {/* Soft core glow (behind bars) */}
+      {/* Soft core glow */}
       <circle ref={coreGlowRef} cx="120" cy="120" r="26" fill="url(#coreGlowGrad)" />
 
       {/* Halo frequency bars */}

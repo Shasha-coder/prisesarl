@@ -112,23 +112,25 @@ export function AgentDock() {
 
           {!minimized && (
             <>
-              {/* Mode toggle */}
-              <div className="flex gap-1 px-4 pt-3">
-                <ModeButton active={mode === "voice"} onClick={() => setMode("voice")}>
-                  {t("agent.mode.voice")}
-                </ModeButton>
-                <ModeButton active={mode === "text"} onClick={() => setMode("text")}>
-                  {t("agent.mode.text")}
-                </ModeButton>
-                <span className="ml-auto text-[10px] font-mono tracking-[0.18em] uppercase text-mute self-center">
-                  {lang.toUpperCase()} · 60+ lang
-                </span>
-              </div>
-
-              {/* The face — only mounted when voice mode is active */}
+              {/* The face — full-bleed dark canvas connecting to the header */}
               {mode === "voice" && (
-                <div className="relative mx-4 mt-3 h-[210px] rounded-xl overflow-hidden bg-gradient-to-b from-paper-2 to-paper-3 shadow-inner">
-                  <div className="absolute inset-0 bg-blueprint-xs opacity-50 pointer-events-none" />
+                <div
+                  className="relative w-full h-[240px] overflow-hidden"
+                  style={{
+                    background:
+                      "radial-gradient(120% 100% at 50% 35%, #102648 0%, #0a2240 55%, #061533 100%)",
+                  }}
+                >
+                  {/* Faint blueprint grid as backdrop */}
+                  <div
+                    className="absolute inset-0 pointer-events-none opacity-30"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
+                      backgroundSize: "20px 20px",
+                    }}
+                  />
+
                   {glbFailed ? (
                     <AvatarSVG
                       audioLevel={audioLevel}
@@ -143,10 +145,42 @@ export function AgentDock() {
                       onLoadError={() => setGlbFailed(true)}
                     />
                   )}
-                  <div className="absolute left-3 bottom-2 right-3 flex items-center justify-between text-[10px] font-mono tracking-[0.22em] uppercase text-ink-2/70">
-                    <span>Ernest · live</span>
-                    <span>{statusLabel}</span>
+
+                  {/* Corner dimension marks */}
+                  <span className="absolute top-2.5 left-3 text-[9px] font-mono tracking-[0.22em] text-paper/55">ERN·01</span>
+                  <span className="absolute top-2.5 right-3 text-[9px] font-mono tracking-[0.22em] text-paper/55">LIVE</span>
+                  <span className="absolute bottom-2.5 left-3 text-[9px] font-mono tracking-[0.22em] text-paper/55">CH·01</span>
+                  <span className="absolute bottom-2.5 right-3 text-[9px] font-mono tracking-[0.22em] text-paper/55">PRISE·SARL</span>
+
+                  {/* Mode pills — floating on top of canvas */}
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-black/30 backdrop-blur-md rounded-full p-1">
+                    <ModePill active={true} onClick={() => setMode("voice")}>
+                      {t("agent.mode.voice")}
+                    </ModePill>
+                    <ModePill active={false} onClick={() => setMode("text")}>
+                      {t("agent.mode.text")}
+                    </ModePill>
                   </div>
+
+                  {/* Status caption at bottom */}
+                  <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.24em] uppercase text-paper/80">
+                    {statusLabel}
+                  </div>
+                </div>
+              )}
+
+              {/* Mode toggle for text-only — sits above transcript */}
+              {mode === "text" && (
+                <div className="flex gap-1 px-4 pt-3">
+                  <ModePill active={false} onClick={() => setMode("voice")}>
+                    {t("agent.mode.voice")}
+                  </ModePill>
+                  <ModePill active={true} onClick={() => setMode("text")}>
+                    {t("agent.mode.text")}
+                  </ModePill>
+                  <span className="ml-auto text-[10px] font-mono tracking-[0.18em] uppercase text-mute self-center">
+                    {lang.toUpperCase()} · 60+ lang
+                  </span>
                 </div>
               )}
 
@@ -230,13 +264,15 @@ export function AgentDock() {
   );
 }
 
-function ModeButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function ModePill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        "px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-[0.04em] transition-all",
-        active ? "bg-ink text-paper" : "bg-ink/5 text-ink-2 hover:bg-ink/10"
+        "px-3 py-1.5 rounded-full text-[10.5px] font-semibold tracking-[0.08em] uppercase transition-all",
+        active
+          ? "bg-paper text-ink"
+          : "text-paper/55 hover:text-paper/90"
       )}
     >
       {children}
