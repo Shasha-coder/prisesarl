@@ -1,0 +1,2904 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a2240" />
+<title>PRISE Sarl — Construire, connecter, former et accompagner l'avenir</title>
+<meta name="description" content="PRISE Sarl — entreprise congolaise spécialisée en génie civil, télécommunications, énergie, logistique et formation professionnelle. Solutions durables, modernes et fiables." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.0.42/dist/lenis.min.js" defer></script>
+<style>
+/* ============================================================
+   PRISE Sarl — design tokens
+   Bleu PRISE (deep) · Encre noire · Papier blanc · Orange ignition
+   ============================================================ */
+:root{
+  --ink:           #0a2240;       /* bleu PRISE — deep blueprint ink */
+  --ink-2:         #14315c;
+  --ink-3:         #1f4480;
+  --paper:         #f6f1e6;       /* aged blueprint paper */
+  --paper-2:       #ece4d2;
+  --white:         #ffffff;
+  --grid:          rgba(10,34,64,.08);
+  --grid-strong:   rgba(10,34,64,.18);
+  --line:          rgba(10,34,64,.85);
+  --hot:           #ff6b1a;       /* CTA ignition orange */
+  --hot-2:         #ff8a3d;
+  --gold:          #f5b400;       /* accents énergie/safety */
+  --steel:         #6b7c93;
+  --mute:          #8a96aa;
+  --surface:       #f4f6f8;
+  --shadow-sm:     0 2px 6px rgba(10,34,64,.06);
+  --shadow-md:     0 14px 40px -12px rgba(10,34,64,.18);
+  --shadow-lg:     0 30px 80px -20px rgba(10,34,64,.32);
+  --r-sm: 6px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --container: 1240px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-weight:400;
+  color:var(--ink);
+  background:var(--white);
+  line-height:1.55;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--ink);color:var(--paper)}
+
+.container{max-width:var(--container);margin:0 auto;padding:0 28px}
+@media (max-width:640px){.container{padding:0 20px}}
+
+/* ============================================================
+   Loader
+   ============================================================ */
+.loader{
+  position:fixed;inset:0;z-index:200;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .6s var(--ease), visibility 0s linear .6s;
+}
+.loader.done{opacity:0;visibility:hidden}
+.loader__compass{width:120px;height:120px}
+.loader__compass circle{fill:none;stroke:var(--paper);stroke-width:1.2;opacity:.4}
+.loader__compass .needle{
+  transform-origin:60px 60px;
+  animation:spin 2.6s var(--ease) infinite;
+}
+.loader__txt{
+  position:absolute;bottom:38px;left:0;right:0;text-align:center;
+  color:var(--paper);letter-spacing:.4em;font-size:11px;font-weight:500;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   Navigation
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:80;
+  padding:18px 0;
+  transition:padding .35s var(--ease), background .35s var(--ease), backdrop-filter .35s;
+}
+.nav.scrolled{
+  padding:10px 0;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  box-shadow:0 1px 0 rgba(10,34,64,.06);
+}
+.nav__row{display:flex;align-items:center;justify-content:space-between;gap:32px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em;font-size:18px}
+.brand__mark{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--ink);position:relative;display:grid;place-items:center;
+  box-shadow:var(--shadow-sm);
+}
+.brand__mark svg{width:22px;height:22px}
+.brand__mark svg path{stroke:var(--paper);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.brand small{display:block;font-size:10px;font-weight:500;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;line-height:1}
+.brand strong{display:block;font-weight:700;letter-spacing:.04em;font-size:17px;line-height:1.2}
+
+.nav__menu{display:flex;align-items:center;gap:30px;font-size:14px;font-weight:500}
+.nav__menu a{position:relative;padding:6px 0;color:var(--ink-2);transition:color .25s}
+.nav__menu a::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--ink);transform:scaleX(0);transform-origin:right;
+  transition:transform .35s var(--ease);
+}
+.nav__menu a:hover{color:var(--ink)}
+.nav__menu a:hover::after{transform:scaleX(1);transform-origin:left}
+
+.nav__right{display:flex;align-items:center;gap:14px}
+.lang{display:flex;align-items:center;gap:2px;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--mute)}
+.lang button{padding:5px 8px;border-radius:4px;color:var(--mute);transition:color .2s,background .2s}
+.lang button.active{color:var(--ink);background:rgba(10,34,64,.06)}
+.lang span{opacity:.4}
+
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:12px 22px;border-radius:999px;
+  font-weight:600;font-size:14px;letter-spacing:.01em;
+  transition:transform .25s var(--ease), box-shadow .25s, background .25s;
+  white-space:nowrap;
+}
+.btn--primary{background:var(--hot);color:var(--white);box-shadow:0 8px 24px -6px rgba(255,107,26,.55)}
+.btn--primary:hover{transform:translateY(-2px);background:var(--hot-2);box-shadow:0 14px 32px -8px rgba(255,107,26,.65)}
+.btn--ghost{background:transparent;color:var(--ink);border:1px solid rgba(10,34,64,.18)}
+.btn--ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn--dark{background:var(--ink);color:var(--paper)}
+.btn--dark:hover{transform:translateY(-2px);background:var(--ink-2)}
+.btn svg{width:16px;height:16px}
+
+.burger{display:none;width:40px;height:40px;border-radius:8px;align-items:center;justify-content:center}
+.burger span{display:block;width:18px;height:1.6px;background:var(--ink);position:relative}
+.burger span::before,.burger span::after{content:'';position:absolute;left:0;right:0;height:1.6px;background:var(--ink)}
+.burger span::before{top:-6px}
+.burger span::after{top:6px}
+
+@media (max-width:980px){
+  .nav__menu{display:none}
+  .burger{display:flex}
+}
+
+/* mobile drawer */
+.drawer{
+  position:fixed;inset:0;z-index:90;background:var(--ink);color:var(--paper);
+  display:flex;flex-direction:column;padding:80px 28px 40px;
+  transform:translateY(-100%);transition:transform .5s var(--ease);
+}
+.drawer.open{transform:translateY(0)}
+.drawer__close{position:absolute;top:22px;right:22px;width:42px;height:42px;color:var(--paper);font-size:22px}
+.drawer a{font-size:26px;font-weight:600;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1);font-family:'Fraunces',serif}
+
+/* ============================================================
+   Hero — Blueprint to Reality
+   ============================================================ */
+.hero{
+  position:relative;min-height:100vh;
+  background:var(--paper);
+  padding:120px 0 60px;overflow:hidden;
+  display:flex;align-items:center;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,#000 35%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,#000 35%,transparent 75%);
+}
+.hero::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(0,0,0,.05),transparent 40%),
+    radial-gradient(circle at 92% 86%,rgba(0,0,0,.06),transparent 40%);
+}
+.hero__row{display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center;position:relative;z-index:2}
+@media (max-width:980px){.hero__row{grid-template-columns:1fr;gap:30px}}
+
+.hero__eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:24px;
+  padding:6px 14px;border:1px solid var(--grid-strong);border-radius:999px;
+  background:rgba(255,255,255,.4);
+}
+.hero__eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--hot);box-shadow:0 0 0 4px rgba(255,107,26,.18);animation:pulse 2s var(--ease) infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(255,107,26,0)}}
+
+.hero__title{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(40px,6.4vw,84px);
+  line-height:1.02;
+  letter-spacing:-.025em;
+  color:var(--ink);
+  margin-bottom:28px;
+}
+.hero__title .verb{display:inline-block;position:relative;margin-right:.18em}
+.hero__title .verb::after{
+  content:'';position:absolute;left:0;right:0;bottom:.06em;height:.18em;
+  background:var(--hot);opacity:.2;z-index:-1;border-radius:2px;
+}
+.hero__title .swap{display:inline-block;min-width:.5ch}
+
+.hero__lead{
+  font-size:18px;color:var(--ink-2);max-width:520px;margin-bottom:36px;line-height:1.6;
+}
+.hero__cta{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:46px}
+.hero__meta{display:flex;flex-wrap:wrap;gap:32px;align-items:center;color:var(--ink-2)}
+.hero__meta .stat{display:flex;flex-direction:column}
+.hero__meta .stat strong{font-family:'Fraunces',serif;font-size:30px;color:var(--ink);line-height:1}
+.hero__meta .stat span{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-top:4px}
+
+/* Blueprint stage */
+.stage{
+  position:relative;aspect-ratio:1/1;max-width:560px;margin-left:auto;
+  background:linear-gradient(160deg,#fdf8eb,#ece4d2);
+  border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(10,34,64,.12),
+    var(--shadow-lg);
+}
+.stage::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  pointer-events:none;
+}
+.stage::after{
+  /* subtle paper texture */
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 22%,rgba(0,0,0,.05),transparent 28%),
+    radial-gradient(circle at 80% 78%,rgba(0,0,0,.08),transparent 30%),
+    radial-gradient(circle at 60% 12%,rgba(0,0,0,.03),transparent 24%);
+  mix-blend-mode:multiply;
+}
+.stage__corner{
+  position:absolute;font-size:9.5px;letter-spacing:.18em;font-weight:600;
+  color:var(--ink-2);text-transform:uppercase;font-family:'Inter',sans-serif;opacity:.65;
+}
+.stage__corner.tl{top:14px;left:18px}
+.stage__corner.tr{top:14px;right:18px;text-align:right}
+.stage__corner.bl{bottom:14px;left:18px}
+.stage__corner.br{bottom:14px;right:18px;text-align:right}
+
+.stage__plate{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .6s var(--ease)}
+.stage__plate.active{opacity:1}
+.stage__plate svg{width:88%;height:88%;overflow:visible}
+.stage__plate .blueprint path,
+.stage__plate .blueprint line,
+.stage__plate .blueprint polyline,
+.stage__plate .blueprint circle,
+.stage__plate .blueprint rect{
+  fill:none;stroke:var(--ink);stroke-width:1.4;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1200;stroke-dashoffset:1200;
+}
+.stage__plate.active .blueprint path,
+.stage__plate.active .blueprint line,
+.stage__plate.active .blueprint polyline,
+.stage__plate.active .blueprint circle,
+.stage__plate.active .blueprint rect{
+  animation:draw 1.6s var(--ease) forwards;
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+.stage__plate .reality{opacity:0;transition:opacity 1.2s var(--ease) .9s}
+.stage__plate.active .reality{opacity:1}
+.stage__plate .reality path,
+.stage__plate .reality polygon,
+.stage__plate .reality rect,
+.stage__plate .reality circle{stroke:none}
+
+/* annotation labels on plate */
+.stage__label{
+  position:absolute;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);background:rgba(255,255,255,.7);padding:4px 9px;border-radius:4px;
+  border:1px solid var(--grid-strong);opacity:0;transform:translateY(4px);
+  transition:opacity .5s ease 1.4s,transform .5s ease 1.4s;
+  pointer-events:none;
+  font-family:'Inter',sans-serif;
+}
+.stage__plate.active .stage__label{opacity:1;transform:none}
+
+/* domain switcher */
+.stage__rail{
+  position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);
+  display:flex;gap:8px;background:var(--ink);padding:8px;border-radius:999px;
+  box-shadow:var(--shadow-md);z-index:5;
+}
+.stage__rail button{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  color:rgba(255,255,255,.55);font-size:11px;font-weight:600;letter-spacing:.05em;
+  transition:background .25s,color .25s,transform .25s;
+}
+.stage__rail button:hover{color:var(--white);transform:translateY(-1px)}
+.stage__rail button.active{background:var(--hot);color:var(--white)}
+
+/* blueprint subject ticker (active label outside stage) */
+.hero__ticker{
+  position:absolute;bottom:24px;left:0;right:0;text-align:center;
+  font-size:11px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--ink-2);z-index:3;
+}
+.hero__ticker em{font-style:normal;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:2px}
+
+/* ============================================================
+   Marquee strip
+   ============================================================ */
+.strip{
+  background:var(--ink);color:var(--paper);
+  padding:18px 0;overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.1);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.strip__track{display:flex;gap:54px;animation:marquee 38s linear infinite;white-space:nowrap;will-change:transform}
+.strip__item{display:inline-flex;align-items:center;gap:14px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,241,230,.78);font-weight:500}
+.strip__item .glyph{width:8px;height:8px;border:1px solid var(--hot);transform:rotate(45deg)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ============================================================
+   Section base
+   ============================================================ */
+.section{padding:120px 0;position:relative}
+.section--paper{background:var(--paper)}
+.section--ink{background:var(--ink);color:var(--paper)}
+.section--surface{background:var(--surface)}
+
+.section__head{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:60px}
+@media (max-width:780px){.section__head{grid-template-columns:1fr;gap:24px}}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--hot);
+}
+.eyebrow .num{
+  display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;
+  background:var(--hot);color:var(--white);font-size:10px;font-weight:700;letter-spacing:0;
+}
+.section--ink .eyebrow{color:var(--gold)}
+.section__title{
+  font-family:'Fraunces',serif;font-weight:600;
+  font-size:clamp(32px,4.5vw,56px);line-height:1.04;letter-spacing:-.02em;
+  margin-top:18px;
+}
+.section__intro{font-size:17px;color:var(--ink-2);max-width:520px;line-height:1.65}
+.section--ink .section__intro{color:rgba(246,241,230,.78)}
+
+/* ============================================================
+   About strip — chiffres clés
+   ============================================================ */
+.figures{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grid-strong);
+  border:1px solid var(--grid-strong);border-radius:var(--r-md);overflow:hidden;
+}
+@media (max-width:780px){.figures{grid-template-columns:repeat(2,1fr)}}
+.figure{
+  background:var(--paper);padding:36px 28px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.figure__num{font-family:'Fraunces',serif;font-size:54px;font-weight:600;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.figure__num small{font-size:.45em;color:var(--hot);font-weight:600;margin-left:4px}
+.figure__lab{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.figure__sub{font-size:13px;color:var(--mute);margin-top:6px}
+
+/* ============================================================
+   Services — domain cards with blueprint icons
+   ============================================================ */
+.domains{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+@media (max-width:980px){.domains{grid-template-columns:1fr}}
+.domain{
+  position:relative;background:var(--paper);border-radius:var(--r-md);
+  padding:30px 28px 26px;overflow:hidden;
+  border:1px solid rgba(10,34,64,.06);
+  transition:transform .5s var(--ease), box-shadow .5s var(--ease);
+  cursor:pointer;
+  min-height:340px;display:flex;flex-direction:column;
+}
+.domain:nth-child(1){grid-column:span 5}
+.domain:nth-child(2){grid-column:span 4}
+.domain:nth-child(3){grid-column:span 3}
+.domain:nth-child(4){grid-column:span 4}
+.domain:nth-child(5){grid-column:span 8}
+@media (max-width:980px){.domain,.domain:nth-child(1),.domain:nth-child(2),.domain:nth-child(3),.domain:nth-child(4),.domain:nth-child(5){grid-column:span 12}}
+
+.domain::before{
+  /* blueprint grid bg revealed on hover */
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:18px 18px;
+}
+.domain:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.domain:hover::before{opacity:1}
+.domain__no{
+  font-family:'Fraunces',serif;font-size:14px;color:var(--mute);font-weight:500;letter-spacing:.04em;
+}
+.domain__title{
+  font-family:'Fraunces',serif;font-weight:600;font-size:28px;line-height:1.1;letter-spacing:-.01em;
+  color:var(--ink);margin:6px 0 14px;
+}
+.domain__desc{font-size:14.5px;color:var(--ink-2);line-height:1.6;flex-grow:1}
+.domain__icon{position:absolute;right:18px;top:18px;width:88px;height:88px;opacity:.85}
+.domain__icon svg{width:100%;height:100%;overflow:visible}
+.domain__icon svg path,
+.domain__icon svg line,
+.domain__icon svg polyline,
+.domain__icon svg circle,
+.domain__icon svg rect{
+  fill:none;stroke:var(--ink);stroke-width:1.3;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:600;stroke-dashoffset:0;
+  transition:stroke-dashoffset 1s var(--ease);
+}
+.domain:hover .domain__icon svg path,
+.domain:hover .domain__icon svg line,
+.domain:hover .domain__icon svg polyline,
+.domain:hover .domain__icon svg circle,
+.domain:hover .domain__icon svg rect{
+  stroke-dashoffset:600;animation:redraw 1.4s var(--ease) forwards;
+}
+@keyframes redraw{0%{stroke-dashoffset:600}100%{stroke-dashoffset:0}}
+.domain__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.domain__chip{
+  font-size:11.5px;padding:5px 10px;border-radius:999px;background:rgba(10,34,64,.06);color:var(--ink-2);
+  font-weight:500;
+}
+.domain__cta{
+  display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-weight:600;font-size:13px;color:var(--ink);
+  border-bottom:1px solid var(--ink);padding-bottom:3px;align-self:flex-start;
+  transition:gap .25s;
+}
+.domain:hover .domain__cta{gap:14px}
+
+/* ============================================================
+   Why PRISE — values grid
+   ============================================================ */
+.values{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:880px){.values{grid-template-columns:repeat(2,1fr)}}
+.value{
+  position:relative;padding:26px 22px;border-radius:var(--r-md);
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  display:flex;flex-direction:column;gap:10px;
+  transition:background .35s,border .35s,transform .35s;
+}
+.value:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);transform:translateY(-3px)}
+.value__no{font-family:'Fraunces',serif;font-size:36px;color:var(--gold);line-height:1;letter-spacing:-.02em}
+.value__title{font-size:15px;font-weight:600;letter-spacing:.02em;color:var(--paper)}
+.value__desc{font-size:13px;color:rgba(246,241,230,.62);line-height:1.55}
+
+/* ============================================================
+   Projects — filterable
+   ============================================================ */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+.filter{
+  padding:9px 16px;border-radius:999px;font-size:13px;font-weight:500;color:var(--ink-2);
+  background:transparent;border:1px solid var(--grid-strong);transition:all .25s;
+}
+.filter:hover{border-color:var(--ink);color:var(--ink)}
+.filter.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.projects{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:980px){.projects{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.projects{grid-template-columns:1fr}}
+.project{
+  position:relative;border-radius:var(--r-md);overflow:hidden;
+  background:var(--ink);aspect-ratio:4/5;cursor:pointer;
+  transition:transform .5s var(--ease);
+}
+.project:hover{transform:translateY(-4px)}
+.project__bg{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,var(--ink-3),var(--ink));
+}
+.project__bg.civ{background:linear-gradient(160deg,#3a5680,#0a2240)}
+.project__bg.tel{background:linear-gradient(160deg,#5a4170,#0a2240)}
+.project__bg.ene{background:linear-gradient(160deg,#a06a1f,#0a2240)}
+.project__bg.log{background:linear-gradient(160deg,#1f5a5a,#0a2240)}
+.project__bg.for{background:linear-gradient(160deg,#7a3a3a,#0a2240)}
+.project__bg::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:28px 28px;
+  mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%);
+  -webkit-mask-image:radial-gradient(circle at 70% 30%,#000,transparent 70%);
+}
+.project__art{position:absolute;inset:0;display:grid;place-items:center;opacity:.85}
+.project__art svg{width:60%;height:60%}
+.project__art svg path,.project__art svg line,.project__art svg polyline,.project__art svg circle,.project__art svg rect{
+  fill:none;stroke:var(--paper);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;opacity:.9;
+}
+.project__meta{
+  position:absolute;left:0;right:0;bottom:0;padding:22px 22px 20px;
+  background:linear-gradient(to top,rgba(0,0,0,.55),transparent);
+  color:var(--paper);
+}
+.project__cat{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px}
+.project__title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;line-height:1.15;margin-bottom:6px}
+.project__loc{font-size:12px;color:rgba(246,241,230,.7);display:flex;align-items:center;gap:6px}
+.project__year{position:absolute;top:18px;right:18px;font-size:11px;letter-spacing:.18em;color:rgba(246,241,230,.6);font-weight:600}
+.project__overlay{
+  position:absolute;inset:0;background:rgba(10,34,64,.92);color:var(--paper);
+  padding:26px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;
+  opacity:0;transition:opacity .4s var(--ease);
+  font-size:13px;line-height:1.6;
+}
+.project:hover .project__overlay{opacity:1}
+.project__overlay strong{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--gold);margin-bottom:8px;display:block}
+.project__overlay ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.project__overlay li{padding-left:14px;position:relative;color:rgba(246,241,230,.85)}
+.project__overlay li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:1px;background:var(--gold)}
+
+/* ============================================================
+   Conversational Devis
+   ============================================================ */
+.devis{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;
+}
+@media (max-width:980px){.devis{grid-template-columns:1fr}}
+
+.devis__left h2{font-family:'Fraunces',serif;font-size:clamp(34px,4.5vw,52px);font-weight:600;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+.devis__left p{font-size:16px;color:var(--ink-2);max-width:440px;line-height:1.7;margin-bottom:30px}
+.devis__steps{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.devis__step-line{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--ink-2)}
+.devis__step-line .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--grid-strong);font-size:11px;font-weight:600;color:var(--ink-2)}
+.devis__step-line.done .n{background:var(--hot);color:var(--white);border-color:var(--hot)}
+.devis__step-line.now .n{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.qcard{
+  background:var(--white);border-radius:var(--r-lg);padding:36px;
+  box-shadow:var(--shadow-md);border:1px solid rgba(10,34,64,.05);
+  position:relative;overflow:hidden;
+}
+.qcard__bar{height:3px;background:rgba(10,34,64,.08);border-radius:999px;margin-bottom:24px;overflow:hidden}
+.qcard__bar > i{display:block;height:100%;background:var(--hot);width:20%;transition:width .5s var(--ease);border-radius:999px}
+.qcard__step{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:6px}
+.qcard__q{font-family:'Fraunces',serif;font-size:24px;font-weight:600;line-height:1.2;color:var(--ink);margin-bottom:22px}
+.qcard__opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qopt{
+  text-align:left;padding:16px 18px;border-radius:var(--r-md);
+  background:var(--surface);border:1px solid transparent;
+  transition:background .25s,border .25s,transform .2s;
+  display:flex;flex-direction:column;gap:6px;
+}
+.qopt:hover{background:var(--white);border-color:var(--ink);transform:translateY(-2px)}
+.qopt strong{font-size:14px;font-weight:600;color:var(--ink)}
+.qopt span{font-size:12px;color:var(--mute)}
+.qopt.selected{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.qopt.selected strong,.qopt.selected span{color:var(--paper)}
+
+.qfields{display:flex;flex-direction:column;gap:12px}
+.qfield{
+  width:100%;padding:14px 16px;border-radius:var(--r-md);
+  background:var(--surface);border:1px solid transparent;
+  font:inherit;color:var(--ink);transition:border .2s,background .2s;
+}
+.qfield:focus{outline:none;background:var(--white);border-color:var(--ink)}
+.qfield::placeholder{color:var(--mute)}
+textarea.qfield{min-height:90px;resize:vertical;font-family:inherit}
+
+.qctrl{display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:12px}
+.qback{font-size:13px;color:var(--mute);font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.qback:hover{color:var(--ink)}
+.qback[disabled]{opacity:.3;pointer-events:none}
+
+.qdone{text-align:center;padding:20px 10px}
+.qdone__check{
+  width:72px;height:72px;border-radius:50%;background:var(--ink);
+  display:grid;place-items:center;margin:0 auto 22px;
+  box-shadow:0 16px 32px -10px rgba(10,34,64,.4);
+}
+.qdone__check svg{width:32px;height:32px;stroke:var(--gold);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.qdone h3{font-family:'Fraunces',serif;font-size:26px;font-weight:600;margin-bottom:10px}
+.qdone p{color:var(--ink-2);font-size:14px;margin-bottom:24px}
+.qdone__buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ============================================================
+   Formations preview
+   ============================================================ */
+.formations{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:980px){.formations{grid-template-columns:1fr}}
+.formation{
+  background:var(--white);border:1px solid var(--grid-strong);border-radius:var(--r-md);
+  padding:26px;display:flex;flex-direction:column;gap:14px;
+  transition:transform .35s var(--ease),box-shadow .35s,border-color .35s;
+}
+.formation:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--ink)}
+.formation__row{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.formation__cat{color:var(--hot)}
+.formation__title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;line-height:1.2;color:var(--ink)}
+.formation__desc{font-size:14px;color:var(--ink-2);line-height:1.55;flex-grow:1}
+.formation__foot{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--grid-strong);padding-top:14px;margin-top:6px}
+.formation__price{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--ink)}
+.formation__price small{font-size:11px;color:var(--mute);font-weight:500;font-family:'Inter';letter-spacing:.1em;text-transform:uppercase}
+.formation__btn{font-size:13px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid var(--ink);padding-bottom:2px;transition:gap .25s}
+.formation:hover .formation__btn{gap:12px}
+
+/* ============================================================
+   Contact
+   ============================================================ */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+@media (max-width:880px){.contact{grid-template-columns:1fr}}
+.contact__list{display:flex;flex-direction:column;gap:22px;margin-top:20px}
+.contact__item{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px dashed var(--grid-strong)}
+.contact__item:last-child{border-bottom:0}
+.contact__icon{width:42px;height:42px;border-radius:10px;background:var(--ink);display:grid;place-items:center;flex-shrink:0}
+.contact__icon svg{width:18px;height:18px;stroke:var(--paper);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.contact__lab{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:4px}
+.contact__val{font-size:15px;color:var(--ink);font-weight:500}
+
+.map{
+  position:relative;aspect-ratio:5/4;border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(160deg,#0e2a52,#0a2240);
+  box-shadow:var(--shadow-lg);
+}
+.map::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.map svg path{fill:rgba(245,180,0,.06);stroke:rgba(245,180,0,.5);stroke-width:1;stroke-linejoin:round}
+.pin{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--hot);box-shadow:0 0 0 4px rgba(255,107,26,.25);transform:translate(-50%,-50%);cursor:pointer}
+.pin::after{content:attr(data-name);position:absolute;left:18px;top:-3px;font-size:11px;font-weight:600;color:var(--paper);background:rgba(10,34,64,.85);padding:3px 8px;border-radius:4px;white-space:nowrap;opacity:0;transform:translateX(-4px);transition:all .25s}
+.pin:hover::after{opacity:1;transform:translateX(0)}
+.pin.kin{top:62%;left:30%}
+.pin.lub{top:78%;left:64%}
+.pin.gom{top:48%;left:72%}
+.pin.kis{top:35%;left:55%}
+.pin.mat{top:64%;left:18%}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer{background:var(--ink);color:var(--paper);padding:80px 0 28px;position:relative;overflow:hidden}
+.footer::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 60% 60% at 80% 0%,#000,transparent 70%);
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 80% 0%,#000,transparent 70%);
+}
+.footer__grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;position:relative;z-index:2}
+@media (max-width:880px){.footer__grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media (max-width:480px){.footer__grid{grid-template-columns:1fr}}
+.footer__col h4{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px}
+.footer__col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer__col a{color:rgba(246,241,230,.72);font-size:14px;transition:color .25s}
+.footer__col a:hover{color:var(--paper)}
+.footer__about{max-width:340px;color:rgba(246,241,230,.72);font-size:14px;line-height:1.65;margin-top:14px}
+.footer__bottom{
+  border-top:1px solid rgba(255,255,255,.08);margin-top:60px;padding-top:24px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  font-size:12px;color:rgba(246,241,230,.55);position:relative;z-index:2;
+}
+.footer__bottom a{color:rgba(246,241,230,.55);margin-left:18px}
+.footer__bottom a:hover{color:var(--paper)}
+
+/* ============================================================
+   WhatsApp float
+   ============================================================ */
+.wa{
+  position:fixed;right:22px;bottom:22px;z-index:60;
+  width:58px;height:58px;border-radius:50%;background:#25D366;
+  display:grid;place-items:center;color:white;
+  box-shadow:0 14px 32px -8px rgba(37,211,102,.55);
+  transition:transform .35s var(--ease);
+}
+.wa:hover{transform:scale(1.08)}
+.wa svg{width:28px;height:28px;fill:white}
+.wa::after{
+  content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(37,211,102,.4);
+  animation:wave 2.4s ease-out infinite;
+}
+@keyframes wave{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.6);opacity:0}}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}
+.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}
+.reveal.d4{transition-delay:.32s}
+
+/* utilities */
+.spacer{height:50px}
+.divider-text{
+  text-align:center;font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--mute);margin:30px 0;display:flex;align-items:center;gap:18px;
+}
+.divider-text::before,.divider-text::after{content:'';flex:1;height:1px;background:var(--grid-strong)}
+
+/* ============================================================
+   v2 — STUNNING ADDITIONS
+   Custom cursor · 3D parallax · Isometric scene · Spotlight
+   ============================================================ */
+
+/* hide default cursor on interactive surfaces (only when our cursor is active) */
+html.has-cursor, html.has-cursor *{cursor:none !important}
+html.has-cursor input,html.has-cursor textarea,html.has-cursor select{cursor:text !important}
+
+.cursor-dot,.cursor-ring{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  will-change:transform;
+}
+.cursor-dot{
+  width:7px;height:7px;border-radius:50%;background:#ffffff;
+  transform:translate3d(-100px,-100px,0) translate(-50%,-50%);
+  transition:opacity .2s ease, background .25s ease, transform .08s linear;
+  mix-blend-mode:difference;
+}
+.cursor-ring{
+  width:36px;height:36px;border:1.4px solid #ffffff;border-radius:50%;
+  transform:translate3d(-100px,-100px,0) translate(-50%,-50%);
+  transition:width .35s var(--ease), height .35s var(--ease),
+             border-color .25s, background .25s, opacity .25s;
+  mix-blend-mode:difference;
+}
+.cursor-ring.hot{border-color:var(--hot);background:rgba(255,107,26,.08);width:54px;height:54px;mix-blend-mode:normal}
+.cursor-ring.dark{border-color:#ffffff}
+.cursor-ring.cross{
+  width:80px;height:80px;border-style:dashed;border-color:var(--hot);
+  background:rgba(255,107,26,.04);
+}
+.cursor-ring.text{width:18px;height:18px;border-color:var(--ink-3);border-radius:2px}
+.cursor-coord{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;
+  letter-spacing:.18em;color:var(--ink);background:var(--paper);
+  padding:4px 8px;border:1px solid var(--grid-strong);border-radius:3px;
+  transform:translate(20px,20px);opacity:0;transition:opacity .2s;
+  white-space:nowrap;
+}
+.cursor-coord.show{opacity:1}
+@media (max-width:980px), (pointer:coarse){
+  .cursor-dot,.cursor-ring,.cursor-coord{display:none !important}
+  html.has-cursor,html.has-cursor *{cursor:auto !important}
+}
+
+/* ============================================================
+   Hero — 3D parallax tilt
+============================================================ */
+.hero__row{perspective:1400px}
+.stage{
+  transform-style:preserve-3d;will-change:transform;
+  transition:transform .45s var(--ease);
+}
+.stage__plate svg{transform:translateZ(40px)}
+.stage__corner{transform:translateZ(60px)}
+.stage__rail{transform:translateZ(80px)}
+.stage__label{transform:translateZ(70px)}
+
+/* hero title word stagger */
+.hero__title .word{
+  display:inline-block;opacity:0;transform:translateY(40px) rotateX(-20deg);
+  transform-origin:0 100%;
+  transition:opacity .9s var(--ease), transform .9s var(--ease);
+}
+.hero__title .word.in{opacity:1;transform:none}
+
+/* ============================================================
+   Spotlight on dark sections
+============================================================ */
+.section--ink{position:relative;overflow:hidden}
+.section--ink::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle 380px at var(--mx,50%) var(--my,30%),
+    rgba(245,180,0,.10),transparent 60%);
+  opacity:0;transition:opacity .5s var(--ease);
+}
+.section--ink.live::after{opacity:1}
+
+.value{position:relative;overflow:hidden}
+.value::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle 160px at var(--vx,50%) var(--vy,50%),
+    rgba(245,180,0,.18),transparent 70%);
+  opacity:0;transition:opacity .35s;
+}
+.value:hover::before{opacity:1}
+
+/* ============================================================
+   ISOMETRIC PANORAMA (services section signature moment)
+============================================================ */
+.iso-wrap{
+  position:relative;
+  background:linear-gradient(180deg,#fdf8eb 0%,#f6f1e6 100%);
+  border-radius:var(--r-lg);
+  padding:30px 28px 100px;
+  border:1px solid rgba(10,34,64,.08);
+  overflow:hidden;
+  box-shadow:var(--shadow-md);
+}
+.iso-wrap::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 60%,#000 50%,transparent 90%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 60%,#000 50%,transparent 90%);
+}
+.iso-wrap::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(0,0,0,.04),transparent 35%),
+    radial-gradient(circle at 88% 78%,rgba(0,0,0,.06),transparent 35%);
+  mix-blend-mode:multiply;
+}
+.iso-corner{
+  position:absolute;font-size:9.5px;letter-spacing:.18em;font-weight:600;
+  color:var(--ink-2);text-transform:uppercase;opacity:.55;z-index:3;
+}
+.iso-corner.tl{top:14px;left:18px}
+.iso-corner.tr{top:14px;right:18px;text-align:right}
+.iso-corner.bl{bottom:14px;left:18px}
+.iso-corner.br{bottom:14px;right:18px;text-align:right}
+
+.iso-stage{
+  position:relative;width:100%;aspect-ratio:1400/520;max-height:64vh;min-height:320px;
+}
+.iso-stage svg{width:100%;height:100%;display:block;overflow:visible}
+.iso-stage svg .ground,
+.iso-stage svg .horizon{
+  fill:none;stroke:var(--ink);stroke-width:1;opacity:.55;
+}
+.iso-stage svg .horizon{stroke-dasharray:3,5;opacity:.25}
+.iso-stage svg .ambience path,
+.iso-stage svg .ambience line,
+.iso-stage svg .ambience circle{
+  fill:none;stroke:var(--ink);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;opacity:.32;
+}
+
+.iso__el{
+  cursor:pointer;
+  transition:transform .35s var(--ease), opacity .35s var(--ease);
+  transform-box:fill-box;transform-origin:50% 100%;
+}
+.iso__el path,.iso__el line,.iso__el polyline,.iso__el rect,.iso__el circle,.iso__el polygon{
+  fill:none;stroke:var(--ink);stroke-width:1.4;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:stroke .35s var(--ease), stroke-width .35s var(--ease), opacity .35s;
+  vector-effect:non-scaling-stroke;
+}
+.iso__el .hit{stroke:none;fill:transparent;pointer-events:all}
+.iso__el .accent{stroke-width:1.8;opacity:.55}
+.iso__el .glow{
+  fill:rgba(255,107,26,.0);
+  stroke:none;
+  transition:fill .4s ease;
+}
+
+/* hover state — element pops, others dim */
+.iso-stage.live .iso__el:not(:hover){opacity:.18}
+.iso-stage.live .iso__el:not(:hover) path,
+.iso-stage.live .iso__el:not(:hover) line,
+.iso-stage.live .iso__el:not(:hover) polyline,
+.iso-stage.live .iso__el:not(:hover) rect,
+.iso-stage.live .iso__el:not(:hover) circle,
+.iso-stage.live .iso__el:not(:hover) polygon{stroke-width:1}
+.iso__el:hover{transform:translateY(-6px)}
+.iso__el:hover path,
+.iso__el:hover line,
+.iso__el:hover polyline,
+.iso__el:hover rect,
+.iso__el:hover circle,
+.iso__el:hover polygon{stroke:var(--hot);stroke-width:1.8}
+.iso__el:hover .accent{opacity:1}
+.iso__el:hover .glow{fill:rgba(255,107,26,.06)}
+
+/* moving sun on the scene */
+@keyframes sunRays{0%,100%{opacity:.3}50%{opacity:.7}}
+.iso-stage svg .sun-rays line{animation:sunRays 3s ease-in-out infinite}
+
+/* truck rolling */
+@keyframes truckRoll{0%{transform:translateX(-30px)}100%{transform:translateX(30px)}}
+.iso__el[data-key="log"] .truck-body{animation:truckRoll 6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.iso__el[data-key="log"] .truck-body circle{transform-origin:center}
+
+/* crane swing */
+@keyframes craneSwing{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.iso__el[data-key="civ"] .crane-arm{animation:craneSwing 6s ease-in-out infinite;transform-box:fill-box;transform-origin:300px 100px}
+
+/* pylon blink */
+@keyframes blink{0%,40%,60%,100%{opacity:.2}50%{opacity:1}}
+.iso__el[data-key="tel"] .blink{animation:blink 2s ease-in-out infinite;fill:var(--hot);stroke:var(--hot)}
+
+/* solar shimmer */
+@keyframes shimmer{0%,100%{opacity:.5}50%{opacity:1}}
+.iso__el[data-key="ene"] .panel{animation:shimmer 3s ease-in-out infinite}
+
+/* training figures gentle bob */
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.iso__el[data-key="for"] .figure{animation:bob 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom}
+.iso__el[data-key="for"] .figure.f2{animation-delay:.4s}
+.iso__el[data-key="for"] .figure.f3{animation-delay:.8s}
+
+/* iso panel below or beside */
+.iso-panel{
+  position:absolute;left:32px;right:32px;bottom:24px;z-index:5;
+  background:rgba(10,34,64,.96);color:var(--paper);
+  border-radius:var(--r-md);padding:22px 26px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+  box-shadow:0 18px 40px -12px rgba(10,34,64,.45);
+  backdrop-filter:blur(8px);
+}
+.iso-panel__no{
+  font-family:'Fraunces',serif;font-size:38px;font-weight:600;color:var(--gold);
+  line-height:1;min-width:50px;letter-spacing:-.02em;
+}
+.iso-panel__body{display:flex;flex-direction:column;gap:6px;min-width:0}
+.iso-panel__lab{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.iso-panel__title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;line-height:1.2;color:var(--paper)}
+.iso-panel__desc{font-size:13.5px;color:rgba(246,241,230,.78);line-height:1.55;margin-top:2px}
+.iso-panel__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.iso-panel__chips span{font-size:11px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:rgba(246,241,230,.85);font-weight:500}
+.iso-panel__cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--hot);color:var(--white);padding:11px 18px;border-radius:999px;
+  font-weight:600;font-size:13px;white-space:nowrap;
+  transition:transform .25s var(--ease), background .25s;
+}
+.iso-panel__cta:hover{transform:translateY(-2px);background:var(--hot-2)}
+.iso-panel__cta svg{width:14px;height:14px}
+.iso-panel.idle .iso-panel__cta{opacity:.4;pointer-events:none}
+
+@media (max-width:780px){
+  .iso-stage{aspect-ratio:1400/700;max-height:none}
+  .iso-panel{position:relative;left:auto;right:auto;bottom:auto;margin-top:18px;
+             grid-template-columns:1fr;text-align:left;gap:10px}
+  .iso-panel__no{font-size:28px}
+  .iso-panel__cta{justify-self:start}
+}
+
+/* iso-mini chips below panorama */
+.iso-mini{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px;
+}
+.iso-mini button{
+  font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-2);
+  padding:8px 14px;border-radius:999px;background:transparent;
+  border:1px solid var(--grid-strong);transition:all .25s;
+}
+.iso-mini button:hover,.iso-mini button.active{
+  background:var(--ink);color:var(--paper);border-color:var(--ink);
+}
+
+/* ============================================================
+   Project card — blueprint redraw on hover
+============================================================ */
+.project__art svg path,
+.project__art svg line,
+.project__art svg polyline,
+.project__art svg circle,
+.project__art svg rect{
+  stroke-dasharray:1000;stroke-dashoffset:0;
+  transition:stroke-dashoffset 1.6s var(--ease);
+}
+.project:hover .project__art svg path,
+.project:hover .project__art svg line,
+.project:hover .project__art svg polyline,
+.project:hover .project__art svg circle,
+.project:hover .project__art svg rect{
+  stroke-dashoffset:1000;animation:projDraw 1.6s var(--ease) forwards;
+}
+@keyframes projDraw{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+
+/* ============================================================
+   Magnetic hover utility — applied via JS to .magnetic
+============================================================ */
+.magnetic{transition:transform .25s var(--ease);will-change:transform}
+
+/* scroll progress bar */
+.progress{
+  position:fixed;top:0;left:0;height:2px;background:var(--hot);z-index:90;
+  width:0%;transition:width .1s linear;
+}
+
+/* ============================================================
+   v2.1 — POLISH
+============================================================ */
+/* devis step transition */
+#qbody{
+  transition:opacity .28s var(--ease), transform .28s var(--ease);
+  will-change:opacity, transform;
+}
+#qbody.swapping{opacity:0;transform:translateY(10px)}
+
+/* iso-panel content cross-fade */
+.iso-panel__lab,
+.iso-panel__title,
+.iso-panel__desc,
+.iso-panel__chips,
+.iso-panel__no{
+  transition:opacity .25s var(--ease), transform .25s var(--ease);
+}
+.iso-panel.swap .iso-panel__lab,
+.iso-panel.swap .iso-panel__title,
+.iso-panel.swap .iso-panel__desc,
+.iso-panel.swap .iso-panel__chips,
+.iso-panel.swap .iso-panel__no{
+  opacity:0;transform:translateY(6px);
+}
+
+/* cursor coord chip — refined */
+.cursor-coord{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:400;
+  background:var(--ink);color:var(--paper);
+  border:0;padding:5px 10px;
+  font-size:10.5px;letter-spacing:.06em;text-transform:none;
+  border-radius:2px;
+  box-shadow:0 6px 20px -6px rgba(10,34,64,.35);
+}
+
+/* loader — brand pulse line */
+.loader__line{
+  position:absolute;left:50%;bottom:78px;transform:translateX(-50%);
+  width:240px;height:1px;background:rgba(246,241,230,.18);overflow:hidden;
+}
+.loader__line::after{
+  content:'';position:absolute;left:-30%;top:0;height:100%;width:30%;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  animation:loaderLine 1.6s var(--ease) infinite;
+}
+@keyframes loaderLine{to{left:130%}}
+.loader__brand{
+  position:absolute;top:38%;left:0;right:0;text-align:center;color:var(--paper);
+  font-family:'Fraunces',serif;font-size:42px;font-weight:600;letter-spacing:.06em;line-height:1;
+  opacity:0;animation:brandIn .9s var(--ease) .25s forwards;
+}
+.loader__sub{
+  position:absolute;top:calc(38% + 56px);left:0;right:0;text-align:center;
+  color:rgba(246,241,230,.55);font-size:10.5px;letter-spacing:.32em;font-weight:500;text-transform:uppercase;
+  opacity:0;animation:brandIn .9s var(--ease) .55s forwards;
+}
+@keyframes brandIn{from{opacity:0;transform:translateY(8px);letter-spacing:.18em}to{opacity:1;transform:none}}
+
+/* nav scrolled state — finer */
+.nav.scrolled{box-shadow:0 1px 0 rgba(10,34,64,.06), 0 8px 28px -16px rgba(10,34,64,.18)}
+
+/* button focus visible */
+.btn:focus-visible,.qopt:focus-visible,.filter:focus-visible{outline:2px solid var(--hot);outline-offset:3px}
+
+/* DRC map pin pulse */
+.pin::before{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:1px solid rgba(255,107,26,.6);
+  animation:pinPulse 2.4s ease-out infinite;
+}
+@keyframes pinPulse{0%{transform:scale(.6);opacity:1}100%{transform:scale(2.2);opacity:0}}
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cursor-coord" id="cursorCoord" aria-hidden="true"></div>
+
+<!-- Scroll progress -->
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- Loader -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__brand">PRISE</div>
+  <div class="loader__sub">Engineering · Infrastructure · Telecoms · Energy · Logistics</div>
+  <svg class="loader__compass" viewBox="0 0 120 120" aria-hidden="true" style="width:60px;height:60px;position:absolute;top:32px;right:32px">
+    <circle cx="60" cy="60" r="56"/>
+    <circle cx="60" cy="60" r="44"/>
+    <circle cx="60" cy="60" r="3" fill="#f6f1e6"/>
+    <g class="needle">
+      <path d="M60 14 L65 60 L60 106 L55 60 Z" fill="#ff6b1a" stroke="none"/>
+      <line x1="60" y1="60" x2="60" y2="14" stroke="#f6f1e6" stroke-width="1"/>
+    </g>
+  </svg>
+  <div class="loader__line" aria-hidden="true"></div>
+  <div class="loader__txt">CONNEXION AU CHANTIER…</div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="container nav__row">
+    <a href="#" class="brand" aria-label="PRISE Sarl">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 M7 14 L17 14"/></svg>
+      </span>
+      <span>
+        <small>Engineering · Infrastructure</small>
+        <strong>PRISE Sarl</strong>
+      </span>
+    </a>
+    <div class="nav__menu" role="navigation">
+      <a href="#about">À propos</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projets</a>
+      <a href="#formations">Formations</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav__right">
+      <div class="lang" aria-label="Langue">
+        <button class="active" data-lang="fr">FR</button>
+        <span>·</span>
+        <button data-lang="en">EN</button>
+      </div>
+      <a href="#devis" class="btn btn--primary">Demander un devis
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <button class="burger" id="burger" aria-label="Menu"><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <button class="drawer__close" id="drawerClose" aria-label="Fermer">×</button>
+  <a href="#about">À propos</a>
+  <a href="#services">Nos services</a>
+  <a href="#projects">Projets</a>
+  <a href="#formations">Formations</a>
+  <a href="#devis">Demander un devis</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- ============================================================
+     HERO — Blueprint to Reality
+============================================================ -->
+<section class="hero">
+  <div class="container hero__row">
+    <div class="hero__copy">
+      <span class="hero__eyebrow"><span class="dot"></span>Kinshasa · République Démocratique du Congo</span>
+
+      <h1 class="hero__title">
+        <span class="word"><span class="verb" id="verb">Construire</span></span><br/>
+        <span class="word">l'avenir,</span><br/>
+        <span class="word">une</span> <span class="word">fondation</span> <span class="word">à</span> <span class="word">la</span> <span class="word">fois.</span>
+      </h1>
+      <p class="hero__lead">
+        PRISE Sarl conçoit, bâtit et opère les infrastructures qui connectent et alimentent
+        l'Afrique centrale — du génie civil aux télécommunications, de l'énergie solaire
+        à la formation professionnelle.
+      </p>
+      <div class="hero__cta">
+        <a href="#devis" class="btn btn--primary">Demander un devis
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#services" class="btn btn--ghost">Découvrir nos services</a>
+      </div>
+      <div class="hero__meta">
+        <div class="stat"><strong>12+</strong><span>années d'expertise</span></div>
+        <div class="stat"><strong>5</strong><span>domaines intégrés</span></div>
+        <div class="stat"><strong>120+</strong><span>projets livrés</span></div>
+      </div>
+    </div>
+
+    <!-- Blueprint stage -->
+    <div class="stage" id="stage" aria-label="Domaines d'expertise — du plan à la réalité">
+      <span class="stage__corner tl">PRISE / Plate 01</span>
+      <span class="stage__corner tr">SCALE 1 : 200</span>
+      <span class="stage__corner bl">DRAWN BY · PRISE TEAM</span>
+      <span class="stage__corner br" id="cornerCount">01 / 05</span>
+
+      <!-- Plate 1: Génie Civil & Bâtiment -->
+      <div class="stage__plate active" data-key="civ">
+        <svg viewBox="0 0 400 400">
+          <g class="blueprint">
+            <!-- ground -->
+            <line x1="40" y1="320" x2="360" y2="320"/>
+            <!-- house outline (gable) -->
+            <polyline points="100,320 100,200 200,120 300,200 300,320 100,320"/>
+            <!-- door -->
+            <rect x="180" y="240" width="40" height="80"/>
+            <!-- windows -->
+            <rect x="125" y="220" width="35" height="35"/>
+            <rect x="240" y="220" width="35" height="35"/>
+            <line x1="142.5" y1="220" x2="142.5" y2="255"/>
+            <line x1="125" y1="237.5" x2="160" y2="237.5"/>
+            <line x1="257.5" y1="220" x2="257.5" y2="255"/>
+            <line x1="240" y1="237.5" x2="275" y2="237.5"/>
+            <!-- roof shading -->
+            <line x1="100" y1="200" x2="200" y2="120"/>
+            <line x1="200" y1="120" x2="300" y2="200"/>
+            <!-- chimney -->
+            <polyline points="240,150 240,180 260,180 260,160"/>
+            <!-- dimension lines -->
+            <line x1="100" y1="345" x2="300" y2="345"/>
+            <line x1="100" y1="340" x2="100" y2="355"/>
+            <line x1="300" y1="340" x2="300" y2="355"/>
+            <!-- foundation hatch -->
+            <line x1="100" y1="320" x2="110" y2="335"/>
+            <line x1="130" y1="320" x2="140" y2="335"/>
+            <line x1="160" y1="320" x2="170" y2="335"/>
+            <line x1="190" y1="320" x2="200" y2="335"/>
+            <line x1="220" y1="320" x2="230" y2="335"/>
+            <line x1="250" y1="320" x2="260" y2="335"/>
+            <line x1="280" y1="320" x2="290" y2="335"/>
+          </g>
+        </svg>
+        <span class="stage__label" style="top:20%;left:8%">ÉLÉVATION SUD</span>
+        <span class="stage__label" style="bottom:14%;right:8%">200 m² · L = 20m</span>
+      </div>
+
+      <!-- Plate 2: Télécoms — Pylône -->
+      <div class="stage__plate" data-key="tel">
+        <svg viewBox="0 0 400 400">
+          <g class="blueprint">
+            <line x1="40" y1="350" x2="360" y2="350"/>
+            <!-- pylon outline -->
+            <line x1="160" y1="350" x2="190" y2="60"/>
+            <line x1="240" y1="350" x2="210" y2="60"/>
+            <!-- horizontal bands -->
+            <line x1="170" y1="280" x2="230" y2="280"/>
+            <line x1="175" y1="220" x2="225" y2="220"/>
+            <line x1="180" y1="160" x2="220" y2="160"/>
+            <line x1="185" y1="110" x2="215" y2="110"/>
+            <!-- diagonal lattice -->
+            <line x1="160" y1="350" x2="230" y2="280"/>
+            <line x1="240" y1="350" x2="170" y2="280"/>
+            <line x1="170" y1="280" x2="225" y2="220"/>
+            <line x1="230" y1="280" x2="175" y2="220"/>
+            <line x1="175" y1="220" x2="220" y2="160"/>
+            <line x1="225" y1="220" x2="180" y2="160"/>
+            <line x1="180" y1="160" x2="215" y2="110"/>
+            <line x1="220" y1="160" x2="185" y2="110"/>
+            <!-- antenna mast -->
+            <line x1="200" y1="60" x2="200" y2="20"/>
+            <!-- antennas -->
+            <line x1="185" y1="100" x2="155" y2="90"/>
+            <line x1="215" y1="100" x2="245" y2="90"/>
+            <rect x="148" y="85" width="10" height="14"/>
+            <rect x="242" y="85" width="10" height="14"/>
+            <!-- foundation pad -->
+            <polyline points="140,350 140,365 260,365 260,350"/>
+            <line x1="140" y1="365" x2="148" y2="378"/>
+            <line x1="170" y1="365" x2="178" y2="378"/>
+            <line x1="200" y1="365" x2="208" y2="378"/>
+            <line x1="230" y1="365" x2="238" y2="378"/>
+            <line x1="252" y1="365" x2="260" y2="378"/>
+            <!-- height marker -->
+            <line x1="285" y1="20" x2="285" y2="350"/>
+            <line x1="280" y1="20" x2="290" y2="20"/>
+            <line x1="280" y1="350" x2="290" y2="350"/>
+          </g>
+        </svg>
+        <span class="stage__label" style="top:8%;left:8%">PYLÔNE 4G · H = 60m</span>
+        <span class="stage__label" style="bottom:14%;right:8%">CHARGE VENT 180 km/h</span>
+      </div>
+
+      <!-- Plate 3: Énergie — Solar array -->
+      <div class="stage__plate" data-key="ene">
+        <svg viewBox="0 0 400 400">
+          <g class="blueprint">
+            <line x1="40" y1="320" x2="360" y2="320"/>
+            <!-- roof -->
+            <polyline points="80,260 200,180 320,260"/>
+            <line x1="80" y1="260" x2="80" y2="320"/>
+            <line x1="320" y1="260" x2="320" y2="320"/>
+            <line x1="80" y1="320" x2="320" y2="320"/>
+            <!-- solar panel array on roof (3 rows) -->
+            <polyline points="115,255 200,200 285,255 200,290 115,255"/>
+            <line x1="143" y1="237" x2="228" y2="265"/>
+            <line x1="172" y1="219" x2="257" y2="247"/>
+            <line x1="200" y1="200" x2="200" y2="290"/>
+            <line x1="143" y1="237" x2="172" y2="219"/>
+            <line x1="143" y1="237" x2="115" y2="255"/>
+            <line x1="172" y1="219" x2="200" y2="200"/>
+            <line x1="228" y1="265" x2="257" y2="247"/>
+            <line x1="257" y1="247" x2="285" y2="255"/>
+            <line x1="228" y1="265" x2="200" y2="290"/>
+            <!-- Sun -->
+            <circle cx="80" cy="80" r="22"/>
+            <line x1="80" y1="40" x2="80" y2="50"/>
+            <line x1="80" y1="110" x2="80" y2="120"/>
+            <line x1="40" y1="80" x2="50" y2="80"/>
+            <line x1="110" y1="80" x2="120" y2="80"/>
+            <line x1="52" y1="52" x2="60" y2="60"/>
+            <line x1="100" y1="100" x2="108" y2="108"/>
+            <line x1="108" y1="52" x2="100" y2="60"/>
+            <line x1="60" y1="100" x2="52" y2="108"/>
+            <!-- electric arrow -->
+            <polyline points="320,140 340,160 320,180 340,200 320,220"/>
+            <!-- wall outlet -->
+            <rect x="290" y="280" width="30" height="35"/>
+            <circle cx="298" cy="295" r="2"/>
+            <circle cx="312" cy="295" r="2"/>
+            <line x1="305" y1="305" x2="305" y2="312"/>
+          </g>
+        </svg>
+        <span class="stage__label" style="top:8%;right:30%">5.4 kWp / 380V</span>
+        <span class="stage__label" style="bottom:14%;left:8%">12 panneaux · monocristallins</span>
+      </div>
+
+      <!-- Plate 4: Logistique — Truck -->
+      <div class="stage__plate" data-key="log">
+        <svg viewBox="0 0 400 400">
+          <g class="blueprint">
+            <!-- road -->
+            <line x1="20" y1="300" x2="380" y2="300"/>
+            <line x1="40" y1="320" x2="80" y2="320"/>
+            <line x1="120" y1="320" x2="160" y2="320"/>
+            <line x1="200" y1="320" x2="240" y2="320"/>
+            <line x1="280" y1="320" x2="320" y2="320"/>
+            <!-- truck cab -->
+            <polyline points="80,300 80,200 130,200 150,170 200,170 200,300"/>
+            <!-- windows -->
+            <polyline points="155,180 155,220 195,220 195,180"/>
+            <line x1="130" y1="220" x2="155" y2="220"/>
+            <line x1="130" y1="200" x2="130" y2="220"/>
+            <!-- wheels cab -->
+            <circle cx="105" cy="300" r="22"/>
+            <circle cx="105" cy="300" r="8"/>
+            <!-- trailer -->
+            <rect x="200" y="170" width="160" height="130"/>
+            <!-- trailer doors -->
+            <line x1="280" y1="170" x2="280" y2="300"/>
+            <line x1="240" y1="220" x2="320" y2="220"/>
+            <!-- trailer wheels -->
+            <circle cx="240" cy="300" r="18"/>
+            <circle cx="240" cy="300" r="6"/>
+            <circle cx="290" cy="300" r="18"/>
+            <circle cx="290" cy="300" r="6"/>
+            <circle cx="340" cy="300" r="18"/>
+            <circle cx="340" cy="300" r="6"/>
+            <!-- cargo dimension -->
+            <line x1="200" y1="155" x2="360" y2="155"/>
+            <line x1="200" y1="150" x2="200" y2="160"/>
+            <line x1="360" y1="150" x2="360" y2="160"/>
+          </g>
+        </svg>
+        <span class="stage__label" style="top:30%;left:8%">CARGO 18T · 40 m³</span>
+        <span class="stage__label" style="bottom:14%;right:8%">RDC · ROUTES NATIONALES</span>
+      </div>
+
+      <!-- Plate 5: Formation — Diploma + people -->
+      <div class="stage__plate" data-key="for">
+        <svg viewBox="0 0 400 400">
+          <g class="blueprint">
+            <!-- mortarboard -->
+            <polyline points="200,80 100,120 200,160 300,120 200,80"/>
+            <line x1="200" y1="160" x2="200" y2="200"/>
+            <line x1="200" y1="200" x2="240" y2="200"/>
+            <line x1="240" y1="200" x2="245" y2="220"/>
+            <circle cx="248" cy="225" r="6"/>
+            <!-- left figure -->
+            <circle cx="120" cy="240" r="18"/>
+            <polyline points="120,258 120,310 100,360"/>
+            <polyline points="120,310 140,360"/>
+            <polyline points="98,275 142,275"/>
+            <!-- right figure -->
+            <circle cx="280" cy="240" r="18"/>
+            <polyline points="280,258 280,310 260,360"/>
+            <polyline points="280,310 300,360"/>
+            <polyline points="258,275 302,275"/>
+            <!-- center figure (taller) -->
+            <circle cx="200" cy="245" r="20"/>
+            <polyline points="200,265 200,335 175,365"/>
+            <polyline points="200,335 225,365"/>
+            <polyline points="175,285 225,285"/>
+            <!-- ground -->
+            <line x1="40" y1="365" x2="360" y2="365"/>
+            <!-- certificate annotation -->
+            <rect x="320" y="280" width="60" height="40"/>
+            <line x1="328" y1="290" x2="372" y2="290"/>
+            <line x1="328" y1="298" x2="372" y2="298"/>
+            <line x1="328" y1="306" x2="356" y2="306"/>
+            <circle cx="358" cy="312" r="5"/>
+          </g>
+        </svg>
+        <span class="stage__label" style="top:14%;right:8%">CERTIFICAT · ISO 21001</span>
+        <span class="stage__label" style="bottom:14%;left:8%">7 DOMAINES MÉTIERS</span>
+      </div>
+
+      <!-- domain switcher -->
+      <div class="stage__rail" role="tablist">
+        <button class="active" data-key="civ" title="Génie Civil & Bâtiment">01</button>
+        <button data-key="tel" title="Télécommunications">02</button>
+        <button data-key="ene" title="Électricité & Énergie">03</button>
+        <button data-key="log" title="Transport & Logistique">04</button>
+        <button data-key="for" title="Formations Professionnelles">05</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__ticker">
+    <span>Plan en cours · </span><em id="tickerLabel">Génie Civil &amp; Bâtiment</em>
+  </div>
+</section>
+
+<!-- ============================================================
+     Marquee strip
+============================================================ -->
+<div class="strip" aria-hidden="true">
+  <div class="strip__track" id="stripTrack">
+    <span class="strip__item"><span class="glyph"></span>Génie Civil &amp; Bâtiment</span>
+    <span class="strip__item"><span class="glyph"></span>Télécommunications</span>
+    <span class="strip__item"><span class="glyph"></span>Électricité &amp; Énergie solaire</span>
+    <span class="strip__item"><span class="glyph"></span>Transport &amp; Logistique</span>
+    <span class="strip__item"><span class="glyph"></span>Formations Professionnelles</span>
+    <span class="strip__item"><span class="glyph"></span>Études techniques</span>
+    <span class="strip__item"><span class="glyph"></span>Audit &amp; Maintenance</span>
+    <!-- duplicated for seamless loop -->
+    <span class="strip__item"><span class="glyph"></span>Génie Civil &amp; Bâtiment</span>
+    <span class="strip__item"><span class="glyph"></span>Télécommunications</span>
+    <span class="strip__item"><span class="glyph"></span>Électricité &amp; Énergie solaire</span>
+    <span class="strip__item"><span class="glyph"></span>Transport &amp; Logistique</span>
+    <span class="strip__item"><span class="glyph"></span>Formations Professionnelles</span>
+    <span class="strip__item"><span class="glyph"></span>Études techniques</span>
+    <span class="strip__item"><span class="glyph"></span>Audit &amp; Maintenance</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     About / chiffres clés
+============================================================ -->
+<section class="section section--paper" id="about">
+  <div class="container">
+    <div class="section__head reveal">
+      <div>
+        <span class="eyebrow"><span class="num">01</span>À propos</span>
+        <h2 class="section__title">Une entreprise congolaise<br/>qui fait l'ingénierie<br/><em style="font-style:italic;color:var(--ink-2)">de l'intérieur.</em></h2>
+      </div>
+      <div>
+        <p class="section__intro">
+          Depuis plus d'une décennie, PRISE Sarl conçoit et opère des infrastructures qui résistent
+          au climat, aux contraintes logistiques et aux exigences techniques de la République Démocratique du Congo.
+          Authenticité, flexibilité, expertise locale — c'est notre signature.
+        </p>
+      </div>
+    </div>
+
+    <div class="figures reveal">
+      <div class="figure">
+        <span class="figure__num">120<small>+</small></span>
+        <span class="figure__lab">Projets livrés</span>
+        <span class="figure__sub">Génie civil, télécoms, énergie</span>
+      </div>
+      <div class="figure">
+        <span class="figure__num">12<small>ans</small></span>
+        <span class="figure__lab">D'expertise</span>
+        <span class="figure__sub">Sur le terrain congolais</span>
+      </div>
+      <div class="figure">
+        <span class="figure__num">5</span>
+        <span class="figure__lab">Domaines intégrés</span>
+        <span class="figure__sub">Une seule équipe, un seul devis</span>
+      </div>
+      <div class="figure">
+        <span class="figure__num">98<small>%</small></span>
+        <span class="figure__lab">Délais respectés</span>
+        <span class="figure__sub">Engagement contractuel</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SERVICES — domain cards
+============================================================ -->
+<section class="section section--surface" id="services">
+  <div class="container">
+    <div class="section__head reveal">
+      <div>
+        <span class="eyebrow"><span class="num">02</span>Nos domaines</span>
+        <h2 class="section__title">Cinq métiers,<br/>une seule équipe<br/><em style="font-style:italic;color:var(--ink-2)">de bout en bout.</em></h2>
+      </div>
+      <div>
+        <p class="section__intro">
+          Du dimensionnement à la mise en service, PRISE intègre l'ensemble de la chaîne :
+          études techniques, construction, télécommunications, énergie, logistique chantier
+          et formation des équipes locales. Un interlocuteur, une responsabilité.
+        </p>
+      </div>
+    </div>
+
+    <!-- ISOMETRIC PANORAMA — signature interactive scene -->
+    <div class="iso-wrap reveal" id="iso">
+      <span class="iso-corner tl">PRISE / Master Plan · 2026</span>
+      <span class="iso-corner tr">SCALE 1 : 500</span>
+      <span class="iso-corner bl">SURVOLEZ UN ÉLÉMENT POUR EXPLORER</span>
+      <span class="iso-corner br" id="isoCorner">5 DOMAINES · 1 ÉQUIPE</span>
+
+      <div class="iso-stage" id="isoStage">
+        <svg viewBox="0 0 1400 520" preserveAspectRatio="xMidYMax meet">
+
+          <!-- ambient layer: distant horizon, sun, birds -->
+          <g class="ambience">
+            <!-- horizon -->
+            <line class="horizon" x1="0" y1="220" x2="1400" y2="220"/>
+            <polyline points="0,205 140,190 280,210 420,185 560,205 700,180 840,200 980,182 1120,205 1260,190 1400,200"/>
+            <!-- sun -->
+            <circle cx="240" cy="100" r="26"/>
+            <g class="sun-rays">
+              <line x1="240" y1="55" x2="240" y2="65"/>
+              <line x1="240" y1="135" x2="240" y2="145"/>
+              <line x1="195" y1="100" x2="205" y2="100"/>
+              <line x1="275" y1="100" x2="285" y2="100"/>
+              <line x1="208" y1="68" x2="215" y2="75"/>
+              <line x1="265" y1="125" x2="272" y2="132"/>
+              <line x1="208" y1="132" x2="215" y2="125"/>
+              <line x1="265" y1="75" x2="272" y2="68"/>
+            </g>
+            <!-- birds -->
+            <path d="M 980 110 q 10 -8 20 0 q 10 -8 20 0"/>
+            <path d="M 1050 130 q 8 -6 16 0 q 8 -6 16 0"/>
+            <!-- main ground -->
+            <line class="ground" x1="0" y1="430" x2="1400" y2="430" stroke-width="1.4"/>
+            <!-- ground hatching -->
+            <line class="ground" x1="0" y1="438" x2="6" y2="448"/>
+            <line class="ground" x1="40" y1="438" x2="46" y2="448"/>
+            <line class="ground" x1="80" y1="438" x2="86" y2="448"/>
+            <line class="ground" x1="120" y1="438" x2="126" y2="448"/>
+            <line class="ground" x1="160" y1="438" x2="166" y2="448"/>
+            <line class="ground" x1="200" y1="438" x2="206" y2="448"/>
+            <line class="ground" x1="240" y1="438" x2="246" y2="448"/>
+            <line class="ground" x1="280" y1="438" x2="286" y2="448"/>
+            <line class="ground" x1="320" y1="438" x2="326" y2="448"/>
+            <line class="ground" x1="360" y1="438" x2="366" y2="448"/>
+            <line class="ground" x1="400" y1="438" x2="406" y2="448"/>
+            <line class="ground" x1="440" y1="438" x2="446" y2="448"/>
+            <line class="ground" x1="480" y1="438" x2="486" y2="448"/>
+            <line class="ground" x1="520" y1="438" x2="526" y2="448"/>
+            <line class="ground" x1="560" y1="438" x2="566" y2="448"/>
+            <line class="ground" x1="600" y1="438" x2="606" y2="448"/>
+            <line class="ground" x1="640" y1="438" x2="646" y2="448"/>
+            <line class="ground" x1="680" y1="438" x2="686" y2="448"/>
+            <line class="ground" x1="720" y1="438" x2="726" y2="448"/>
+            <line class="ground" x1="760" y1="438" x2="766" y2="448"/>
+            <line class="ground" x1="800" y1="438" x2="806" y2="448"/>
+            <line class="ground" x1="840" y1="438" x2="846" y2="448"/>
+            <line class="ground" x1="880" y1="438" x2="886" y2="448"/>
+            <line class="ground" x1="920" y1="438" x2="926" y2="448"/>
+            <line class="ground" x1="960" y1="438" x2="966" y2="448"/>
+            <line class="ground" x1="1000" y1="438" x2="1006" y2="448"/>
+            <line class="ground" x1="1040" y1="438" x2="1046" y2="448"/>
+            <line class="ground" x1="1080" y1="438" x2="1086" y2="448"/>
+            <line class="ground" x1="1120" y1="438" x2="1126" y2="448"/>
+            <line class="ground" x1="1160" y1="438" x2="1166" y2="448"/>
+            <line class="ground" x1="1200" y1="438" x2="1206" y2="448"/>
+            <line class="ground" x1="1240" y1="438" x2="1246" y2="448"/>
+            <line class="ground" x1="1280" y1="438" x2="1286" y2="448"/>
+            <line class="ground" x1="1320" y1="438" x2="1326" y2="448"/>
+            <line class="ground" x1="1360" y1="438" x2="1366" y2="448"/>
+          </g>
+
+          <!-- 1. GÉNIE CIVIL — Building under construction with crane -->
+          <g class="iso__el" data-key="civ">
+            <rect class="hit" x="40" y="60" width="380" height="380"/>
+            <!-- glow halo -->
+            <rect class="glow" x="60" y="80" width="340" height="350" rx="12"/>
+            <!-- foundation -->
+            <line x1="80" y1="430" x2="280" y2="430" class="accent"/>
+            <line x1="80" y1="430" x2="80" y2="420"/>
+            <line x1="280" y1="430" x2="280" y2="420"/>
+            <!-- ground floor walls -->
+            <rect x="80" y="340" width="200" height="90"/>
+            <!-- door -->
+            <rect x="160" y="380" width="40" height="50"/>
+            <!-- windows ground floor -->
+            <rect x="100" y="355" width="32" height="22"/>
+            <rect x="228" y="355" width="32" height="22"/>
+            <line x1="116" y1="355" x2="116" y2="377"/>
+            <line x1="100" y1="366" x2="132" y2="366"/>
+            <line x1="244" y1="355" x2="244" y2="377"/>
+            <line x1="228" y1="366" x2="260" y2="366"/>
+            <!-- first floor walls -->
+            <rect x="80" y="260" width="200" height="80"/>
+            <rect x="100" y="280" width="32" height="32"/>
+            <rect x="148" y="280" width="32" height="32"/>
+            <rect x="196" y="280" width="32" height="32"/>
+            <rect x="244" y="280" width="32" height="32"/>
+            <line x1="116" y1="280" x2="116" y2="312"/>
+            <line x1="100" y1="296" x2="132" y2="296"/>
+            <line x1="164" y1="280" x2="164" y2="312"/>
+            <line x1="148" y1="296" x2="180" y2="296"/>
+            <line x1="212" y1="280" x2="212" y2="312"/>
+            <line x1="196" y1="296" x2="228" y2="296"/>
+            <line x1="260" y1="280" x2="260" y2="312"/>
+            <line x1="244" y1="296" x2="276" y2="296"/>
+            <!-- second floor (under construction skeleton) -->
+            <line x1="80" y1="260" x2="80" y2="180"/>
+            <line x1="280" y1="260" x2="280" y2="180"/>
+            <line x1="80" y1="180" x2="280" y2="180"/>
+            <line x1="120" y1="260" x2="120" y2="180" stroke-dasharray="3,3"/>
+            <line x1="160" y1="260" x2="160" y2="180" stroke-dasharray="3,3"/>
+            <line x1="200" y1="260" x2="200" y2="180" stroke-dasharray="3,3"/>
+            <line x1="240" y1="260" x2="240" y2="180" stroke-dasharray="3,3"/>
+            <line x1="80" y1="220" x2="280" y2="220" stroke-dasharray="3,3"/>
+            <!-- crane -->
+            <g class="crane-arm">
+              <line x1="328" y1="430" x2="328" y2="100"/>
+              <line x1="348" y1="430" x2="348" y2="100"/>
+              <line x1="328" y1="100" x2="348" y2="100"/>
+              <line x1="328" y1="160" x2="348" y2="140"/>
+              <line x1="348" y1="160" x2="328" y2="140"/>
+              <line x1="328" y1="220" x2="348" y2="200"/>
+              <line x1="348" y1="220" x2="328" y2="200"/>
+              <line x1="328" y1="280" x2="348" y2="260"/>
+              <line x1="348" y1="280" x2="328" y2="260"/>
+              <line x1="328" y1="340" x2="348" y2="320"/>
+              <line x1="348" y1="340" x2="328" y2="320"/>
+              <!-- arm -->
+              <line x1="338" y1="100" x2="200" y2="80"/>
+              <line x1="338" y1="100" x2="420" y2="115"/>
+              <line x1="338" y1="100" x2="338" y2="85"/>
+              <!-- counterweight -->
+              <rect x="195" y="74" width="20" height="14"/>
+              <!-- cable + load -->
+              <line x1="240" y1="84" x2="240" y2="180" stroke-dasharray="2,3"/>
+              <rect x="228" y="180" width="24" height="18"/>
+            </g>
+          </g>
+
+          <!-- 2. TÉLÉCOMS — Pylon -->
+          <g class="iso__el" data-key="tel">
+            <rect class="hit" x="440" y="40" width="180" height="400"/>
+            <rect class="glow" x="450" y="60" width="160" height="370" rx="12"/>
+            <!-- legs -->
+            <line x1="470" y1="430" x2="525" y2="100"/>
+            <line x1="580" y1="430" x2="525" y2="100"/>
+            <!-- bands -->
+            <line x1="486" y1="340" x2="564" y2="340"/>
+            <line x1="498" y1="270" x2="552" y2="270"/>
+            <line x1="508" y1="200" x2="542" y2="200"/>
+            <line x1="516" y1="150" x2="534" y2="150"/>
+            <!-- diagonals -->
+            <line x1="470" y1="430" x2="564" y2="340"/>
+            <line x1="580" y1="430" x2="486" y2="340"/>
+            <line x1="486" y1="340" x2="552" y2="270"/>
+            <line x1="564" y1="340" x2="498" y2="270"/>
+            <line x1="498" y1="270" x2="542" y2="200"/>
+            <line x1="552" y1="270" x2="508" y2="200"/>
+            <line x1="508" y1="200" x2="534" y2="150"/>
+            <line x1="542" y1="200" x2="516" y2="150"/>
+            <!-- mast -->
+            <line x1="525" y1="100" x2="525" y2="40"/>
+            <!-- antennas -->
+            <line x1="510" y1="135" x2="475" y2="120"/>
+            <line x1="540" y1="135" x2="575" y2="120"/>
+            <rect x="468" y="115" width="10" height="14"/>
+            <rect x="572" y="115" width="10" height="14"/>
+            <!-- microwave dish -->
+            <path d="M 500 90 a 12 12 0 0 1 0 -22 l 0 22 z"/>
+            <line x1="500" y1="79" x2="525" y2="80"/>
+            <!-- aviation light (blink) -->
+            <circle class="blink" cx="525" cy="40" r="4" stroke-width="1"/>
+            <!-- foundation pad -->
+            <line x1="450" y1="430" x2="600" y2="430" class="accent"/>
+            <line x1="450" y1="430" x2="450" y2="438"/>
+            <line x1="600" y1="430" x2="600" y2="438"/>
+            <!-- height marker -->
+            <line x1="625" y1="40" x2="625" y2="430" stroke-dasharray="2,3" opacity=".5"/>
+            <line x1="618" y1="40" x2="632" y2="40" opacity=".5"/>
+            <line x1="618" y1="430" x2="632" y2="430" opacity=".5"/>
+          </g>
+
+          <!-- 3. ÉNERGIE — Building with solar panels -->
+          <g class="iso__el" data-key="ene">
+            <rect class="hit" x="640" y="180" width="280" height="260"/>
+            <rect class="glow" x="650" y="200" width="260" height="230" rx="12"/>
+            <!-- house body -->
+            <rect x="690" y="320" width="200" height="110"/>
+            <!-- door -->
+            <rect x="775" y="380" width="32" height="50"/>
+            <!-- windows -->
+            <rect x="704" y="340" width="34" height="32"/>
+            <rect x="838" y="340" width="34" height="32"/>
+            <line x1="721" y1="340" x2="721" y2="372"/>
+            <line x1="704" y1="356" x2="738" y2="356"/>
+            <line x1="855" y1="340" x2="855" y2="372"/>
+            <line x1="838" y1="356" x2="872" y2="356"/>
+            <!-- gable roof -->
+            <polyline points="690,320 790,250 890,320"/>
+            <line x1="790" y1="250" x2="790" y2="320" stroke-dasharray="3,3" opacity=".4"/>
+            <!-- solar panel array on roof -->
+            <g class="panel">
+              <polyline points="715,308 790,260 865,308 790,338 715,308"/>
+              <line x1="752" y1="284" x2="827" y2="324"/>
+              <line x1="790" y1="260" x2="790" y2="338"/>
+              <line x1="733" y1="296" x2="808" y2="336"/>
+              <line x1="772" y1="272" x2="847" y2="312"/>
+            </g>
+            <!-- electrical line out -->
+            <polyline points="890,360 920,360 920,430"/>
+            <!-- meter box -->
+            <rect x="906" y="380" width="28" height="30"/>
+            <line x1="912" y1="392" x2="928" y2="392"/>
+            <line x1="912" y1="400" x2="928" y2="400"/>
+          </g>
+
+          <!-- 4. LOGISTIQUE — Truck on road -->
+          <g class="iso__el" data-key="log">
+            <rect class="hit" x="940" y="260" width="280" height="180"/>
+            <rect class="glow" x="950" y="280" width="260" height="150" rx="12"/>
+            <!-- road -->
+            <line x1="940" y1="430" x2="1220" y2="430" class="accent"/>
+            <line x1="940" y1="455" x2="1220" y2="455"/>
+            <line x1="950" y1="442" x2="970" y2="442" opacity=".6"/>
+            <line x1="990" y1="442" x2="1010" y2="442" opacity=".6"/>
+            <line x1="1030" y1="442" x2="1050" y2="442" opacity=".6"/>
+            <line x1="1070" y1="442" x2="1090" y2="442" opacity=".6"/>
+            <line x1="1110" y1="442" x2="1130" y2="442" opacity=".6"/>
+            <line x1="1150" y1="442" x2="1170" y2="442" opacity=".6"/>
+            <line x1="1190" y1="442" x2="1210" y2="442" opacity=".6"/>
+            <!-- truck (animated) -->
+            <g class="truck-body">
+              <!-- cab -->
+              <polyline points="980,420 980,360 1020,360 1040,330 1080,330 1080,420"/>
+              <!-- window -->
+              <polyline points="1045,338 1045,358 1075,358 1075,338"/>
+              <line x1="1020" y1="358" x2="1045" y2="358"/>
+              <line x1="1020" y1="360" x2="1020" y2="385"/>
+              <!-- headlight -->
+              <circle cx="1083" cy="396" r="3"/>
+              <!-- trailer -->
+              <rect x="1080" y="330" width="120" height="90"/>
+              <line x1="1140" y1="330" x2="1140" y2="420"/>
+              <line x1="1090" y1="350" x2="1190" y2="350" opacity=".4"/>
+              <line x1="1090" y1="380" x2="1190" y2="380" opacity=".4"/>
+              <!-- wheels -->
+              <circle cx="998" cy="420" r="11"/>
+              <circle cx="998" cy="420" r="4"/>
+              <circle cx="1098" cy="420" r="11"/>
+              <circle cx="1098" cy="420" r="4"/>
+              <circle cx="1170" cy="420" r="11"/>
+              <circle cx="1170" cy="420" r="4"/>
+            </g>
+          </g>
+
+          <!-- 5. FORMATIONS — Training building with figures -->
+          <g class="iso__el" data-key="for">
+            <rect class="hit" x="1230" y="160" width="170" height="280"/>
+            <rect class="glow" x="1240" y="180" width="150" height="250" rx="12"/>
+            <!-- school body -->
+            <rect x="1260" y="290" width="130" height="140"/>
+            <!-- gable roof -->
+            <polyline points="1260,290 1325,235 1390,290"/>
+            <!-- bell tower -->
+            <line x1="1325" y1="235" x2="1325" y2="210"/>
+            <rect x="1318" y="195" width="14" height="15"/>
+            <line x1="1325" y1="200" x2="1325" y2="195"/>
+            <circle cx="1325" cy="195" r="2"/>
+            <!-- door -->
+            <rect x="1308" y="380" width="34" height="50"/>
+            <line x1="1325" y1="385" x2="1325" y2="425"/>
+            <!-- windows -->
+            <rect x="1272" y="310" width="22" height="22"/>
+            <rect x="1296" y="310" width="22" height="22"/>
+            <rect x="1332" y="310" width="22" height="22"/>
+            <rect x="1356" y="310" width="22" height="22"/>
+            <line x1="1283" y1="310" x2="1283" y2="332"/>
+            <line x1="1272" y1="321" x2="1294" y2="321"/>
+            <line x1="1307" y1="310" x2="1307" y2="332"/>
+            <line x1="1296" y1="321" x2="1318" y2="321"/>
+            <line x1="1343" y1="310" x2="1343" y2="332"/>
+            <line x1="1332" y1="321" x2="1354" y2="321"/>
+            <line x1="1367" y1="310" x2="1367" y2="332"/>
+            <line x1="1356" y1="321" x2="1378" y2="321"/>
+            <!-- flag pole -->
+            <line x1="1265" y1="290" x2="1265" y2="265"/>
+            <polyline points="1265,265 1280,270 1265,275"/>
+            <!-- figures -->
+            <g class="figure f1">
+              <circle cx="1240" cy="395" r="8"/>
+              <line x1="1240" y1="403" x2="1240" y2="420"/>
+              <line x1="1240" y1="420" x2="1234" y2="430"/>
+              <line x1="1240" y1="420" x2="1246" y2="430"/>
+              <line x1="1233" y1="409" x2="1247" y2="409"/>
+            </g>
+            <g class="figure f2">
+              <circle cx="1255" cy="392" r="9"/>
+              <line x1="1255" y1="401" x2="1255" y2="420"/>
+              <line x1="1255" y1="420" x2="1249" y2="430"/>
+              <line x1="1255" y1="420" x2="1261" y2="430"/>
+              <line x1="1247" y1="408" x2="1263" y2="408"/>
+            </g>
+            <g class="figure f3">
+              <circle cx="1244" cy="395" r="7"/>
+              <line x1="1244" y1="402" x2="1244" y2="420"/>
+              <line x1="1244" y1="420" x2="1239" y2="430"/>
+              <line x1="1244" y1="420" x2="1249" y2="430"/>
+              <line x1="1238" y1="408" x2="1250" y2="408"/>
+            </g>
+          </g>
+        </svg>
+
+        <!-- floating panel -->
+        <div class="iso-panel idle" id="isoPanel">
+          <div class="iso-panel__no" id="isoNo">01—05</div>
+          <div class="iso-panel__body">
+            <div class="iso-panel__lab" id="isoLab">PRISE · MASTER PLAN</div>
+            <div class="iso-panel__title" id="isoTitle">Survolez la scène pour explorer chaque domaine.</div>
+            <div class="iso-panel__desc" id="isoDesc">Cinq métiers, une seule équipe — chaque élément du paysage représente un service intégré.</div>
+            <div class="iso-panel__chips" id="isoChips"></div>
+          </div>
+          <a href="#devis" class="iso-panel__cta" id="isoCta">
+            Demander un devis
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="iso-mini" id="isoMini">
+        <button data-key="civ">01 · Génie Civil &amp; Bâtiment</button>
+        <button data-key="tel">02 · Télécommunications</button>
+        <button data-key="ene">03 · Électricité &amp; Énergie</button>
+        <button data-key="log">04 · Transport &amp; Logistique</button>
+        <button data-key="for">05 · Formations Professionnelles</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     POURQUOI PRISE
+============================================================ -->
+<section class="section section--ink">
+  <div class="container">
+    <div class="section__head reveal">
+      <div>
+        <span class="eyebrow"><span class="num">03</span>Pourquoi PRISE</span>
+        <h2 class="section__title">Huit raisons<br/>de bâtir avec nous.</h2>
+      </div>
+      <div>
+        <p class="section__intro">
+          Notre standard ne se négocie pas : sécurité du chantier, qualité d'exécution, respect des délais
+          et accompagnement de bout en bout. Que vous soyez ministère, opérateur télécom, mineur ou industriel —
+          la même équipe, du devis à la livraison.
+        </p>
+      </div>
+    </div>
+
+    <div class="values">
+      <div class="value reveal"><span class="value__no">01</span><span class="value__title">Authenticité</span><span class="value__desc">Une équipe congolaise qui connaît le terrain, les fournisseurs et les normes locales.</span></div>
+      <div class="value reveal d1"><span class="value__no">02</span><span class="value__title">Flexibilité</span><span class="value__desc">Solutions adaptées à votre budget, à votre site et à votre calendrier.</span></div>
+      <div class="value reveal d2"><span class="value__no">03</span><span class="value__title">Compréhension</span><span class="value__desc">Brief écouté, contraintes anticipées, livrables explicites.</span></div>
+      <div class="value reveal d3"><span class="value__no">04</span><span class="value__title">Expertise locale</span><span class="value__desc">Présents à Kinshasa, mobilisables sur l'ensemble du territoire RDC.</span></div>
+      <div class="value reveal"><span class="value__no">05</span><span class="value__title">Qualité</span><span class="value__desc">Contrôles indépendants, normes ISO, traçabilité matériaux.</span></div>
+      <div class="value reveal d1"><span class="value__no">06</span><span class="value__title">Modernité</span><span class="value__desc">BIM, monitoring temps réel, énergie solaire, télécoms 4G/5G.</span></div>
+      <div class="value reveal d2"><span class="value__no">07</span><span class="value__title">Délais</span><span class="value__desc">Engagement contractuel sur le calendrier — 98 % de respect.</span></div>
+      <div class="value reveal d3"><span class="value__no">08</span><span class="value__title">Accompagnement</span><span class="value__desc">Un interlocuteur dédié du devis à la garantie post-livraison.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROJETS — filterable gallery
+============================================================ -->
+<section class="section section--paper" id="projects">
+  <div class="container">
+    <div class="section__head reveal">
+      <div>
+        <span class="eyebrow"><span class="num">04</span>Projets réalisés</span>
+        <h2 class="section__title">Le terrain<br/>parle pour nous.</h2>
+      </div>
+      <div>
+        <p class="section__intro">
+          Une sélection de chantiers livrés à travers la RDC. Cliquez sur une carte pour ouvrir le dossier technique.
+        </p>
+      </div>
+    </div>
+
+    <div class="filters reveal" id="filters">
+      <button class="filter active" data-cat="all">Tous</button>
+      <button class="filter" data-cat="civ">Génie Civil</button>
+      <button class="filter" data-cat="tel">Télécoms</button>
+      <button class="filter" data-cat="ene">Énergie</button>
+      <button class="filter" data-cat="log">Logistique</button>
+      <button class="filter" data-cat="for">Formations</button>
+    </div>
+
+    <div class="projects" id="projects">
+      <article class="project reveal" data-cat="civ">
+        <div class="project__bg civ"></div>
+        <div class="project__art">
+          <svg viewBox="0 0 200 200">
+            <polyline points="20,160 20,80 100,30 180,80 180,160 20,160"/>
+            <rect x="84" y="105" width="32" height="55"/>
+            <rect x="40" y="100" width="24" height="24"/>
+            <rect x="136" y="100" width="24" height="24"/>
+          </svg>
+        </div>
+        <span class="project__year">2024</span>
+        <div class="project__meta">
+          <span class="project__cat">Génie Civil</span>
+          <h3 class="project__title">Centre administratif Limete</h3>
+          <span class="project__loc">Kinshasa · 2 800 m²</span>
+        </div>
+        <div class="project__overlay">
+          <strong>Centre administratif Limete</strong>
+          <ul>
+            <li>Surface bâtie : 2 800 m² · R+3</li>
+            <li>Études techniques + exécution clé-en-main</li>
+            <li>Délai : 14 mois · Budget tenu</li>
+            <li>Client institutionnel</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal d1" data-cat="tel">
+        <div class="project__bg tel"></div>
+        <div class="project__art">
+          <svg viewBox="0 0 200 200">
+            <line x1="80" y1="180" x2="95" y2="20"/>
+            <line x1="120" y1="180" x2="105" y2="20"/>
+            <line x1="100" y1="20" x2="100" y2="5"/>
+            <line x1="84" y1="140" x2="116" y2="140"/>
+            <line x1="88" y1="100" x2="112" y2="100"/>
+            <line x1="92" y1="60" x2="108" y2="60"/>
+            <line x1="80" y1="180" x2="116" y2="140"/>
+            <line x1="120" y1="180" x2="84" y2="140"/>
+          </svg>
+        </div>
+        <span class="project__year">2024</span>
+        <div class="project__meta">
+          <span class="project__cat">Télécoms</span>
+          <h3 class="project__title">Pylônes 4G · Corridor Kasaï</h3>
+          <span class="project__loc">12 sites · 60-80m</span>
+        </div>
+        <div class="project__overlay">
+          <strong>Pylônes 4G · Corridor Kasaï</strong>
+          <ul>
+            <li>12 sites · 60 à 80 mètres</li>
+            <li>Acquisition + due diligence + construction</li>
+            <li>Charge vent 180 km/h · norme TIA</li>
+            <li>Opérateur télécom national</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal d2" data-cat="ene">
+        <div class="project__bg ene"></div>
+        <div class="project__art">
+          <svg viewBox="0 0 200 200">
+            <polyline points="40,140 100,90 160,140 100,170 40,140"/>
+            <line x1="70" y1="115" x2="130" y2="155"/>
+            <line x1="100" y1="90" x2="100" y2="170"/>
+            <circle cx="40" cy="40" r="14"/>
+          </svg>
+        </div>
+        <span class="project__year">2023</span>
+        <div class="project__meta">
+          <span class="project__cat">Énergie solaire</span>
+          <h3 class="project__title">Centrale solaire Lubumbashi</h3>
+          <span class="project__loc">240 kWp · industriel</span>
+        </div>
+        <div class="project__overlay">
+          <strong>Centrale solaire Lubumbashi</strong>
+          <ul>
+            <li>240 kWp · onduleurs 250 kW</li>
+            <li>Toiture industrielle 1 800 m²</li>
+            <li>Réduction facture énergie : -68 %</li>
+            <li>ROI projeté : 4,2 ans</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal" data-cat="log">
+        <div class="project__bg log"></div>
+        <div class="project__art">
+          <svg viewBox="0 0 200 200">
+            <polyline points="30,150 30,100 100,100 120,80 170,80 170,150"/>
+            <circle cx="55" cy="150" r="12"/>
+            <circle cx="135" cy="150" r="12"/>
+          </svg>
+        </div>
+        <span class="project__year">2024</span>
+        <div class="project__meta">
+          <span class="project__cat">Logistique</span>
+          <h3 class="project__title">Approvisionnement chantier minier</h3>
+          <span class="project__loc">Kolwezi · 18 mois</span>
+        </div>
+        <div class="project__overlay">
+          <strong>Approvisionnement chantier minier</strong>
+          <ul>
+            <li>Logistique multi-site Kolwezi</li>
+            <li>Flotte dédiée 14 véhicules</li>
+            <li>Suivi GPS temps réel</li>
+            <li>Gestion douanes &amp; carburant</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal d1" data-cat="civ">
+        <div class="project__bg civ"></div>
+        <div class="project__art">
+          <svg viewBox="0 0 200 200">
+            <polyline points="20,170 60,170 60,80 140,80 140,170 180,170"/>
+            <rect x="75" y="95" width="20" height="20"/>
+            <rect x="105" y="95" width="20" height="20"/>
+            <rect x="75" y="125" width="20" height="20"/>
+            <rect x="105" y="125" width="20" height="20"/>
+          </svg>
+        </div>
+        <span class="project__year">2023</span>
+        <div class="project__meta">
+          <span class="project__cat">Génie Civil</span>
+          <h3 class="project__title">Résidence R+4 · Gombe</h3>
+          <span class="project__loc">Kinshasa · 24 logements</span>
+        </div>
+        <div class="project__overlay">
+          <strong>Résidence R+4 · Gombe</strong>
+          <ul>
+            <li>24 logements haut standing</li>
+            <li>Études géotechniques + exécution</li>
+            <li>Parking sous-sol 30 places</li>
+            <li>Livraison anticipée de 6 semaines</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="project reveal d2" data-cat="for">
+        <div class="project__bg for"></div>
+        <div class="project__art">
+          <svg viewBox="0 0 200 200">
+            <polyline points="100,30 50,55 100,80 150,55 100,30"/>
+            <line x1="100" y1="80" x2="100" y2="110"/>
+            <circle cx="70" cy="130" r="14"/>
+            <circle cx="130" cy="130" r="14"/>
+            <polyline points="70,144 70,180"/>
+            <polyline points="130,144 130,180"/>
+          </svg>
+        </div>
+        <span class="project__year">2024</span>
+        <div class="project__meta">
+          <span class="project__cat">Formations</span>
+          <h3 class="project__title">Académie HSE · Cohorte 2024</h3>
+          <span class="project__loc">42 cadres certifiés</span>
+        </div>
+        <div class="project__overlay">
+          <strong>Académie HSE · Cohorte 2024</strong>
+          <ul>
+            <li>42 cadres certifiés sur 6 mois</li>
+            <li>Programme HSE + qualité</li>
+            <li>Examens IOSH/NEBOSH</li>
+            <li>Taux de réussite : 96 %</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONVERSATIONAL DEVIS
+============================================================ -->
+<section class="section section--surface" id="devis">
+  <div class="container">
+    <div class="devis">
+      <div class="devis__left reveal">
+        <span class="eyebrow"><span class="num">05</span>Demander un devis</span>
+        <h2 style="margin-top:18px">Pas un formulaire.<br/><em style="font-style:italic;color:var(--ink-2)">Un entretien.</em></h2>
+        <p>Quatre questions, deux minutes. Notre équipe vous répond sous 24 h ouvrées avec une première estimation et les prochaines étapes — pas un accusé de réception automatique.</p>
+
+        <div class="devis__steps">
+          <div class="devis__step-line now" id="sl1"><span class="n">1</span><span>Quel domaine ?</span></div>
+          <div class="devis__step-line" id="sl2"><span class="n">2</span><span>Quel type d'intervention ?</span></div>
+          <div class="devis__step-line" id="sl3"><span class="n">3</span><span>Localisation &amp; calendrier</span></div>
+          <div class="devis__step-line" id="sl4"><span class="n">4</span><span>Vos coordonnées</span></div>
+        </div>
+      </div>
+
+      <div class="qcard reveal d1" id="qcard" aria-live="polite">
+        <div class="qcard__bar"><i id="qbar" style="width:25%"></i></div>
+        <div id="qbody"><!-- dynamic --></div>
+        <div class="qctrl">
+          <button class="qback" id="qback" disabled>← Précédent</button>
+          <span style="font-size:11px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;font-weight:600">
+            Étape <span id="qnum">1</span> / 4
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FORMATIONS preview
+============================================================ -->
+<section class="section section--paper" id="formations">
+  <div class="container">
+    <div class="section__head reveal">
+      <div>
+        <span class="eyebrow"><span class="num">06</span>Formations</span>
+        <h2 class="section__title">Apprendre<br/>par les ingénieurs<br/><em style="font-style:italic;color:var(--ink-2)">qui font.</em></h2>
+      </div>
+      <div>
+        <p class="section__intro">
+          Catalogue complet bientôt accessible — inscription en ligne, programme téléchargeable, paiement
+          ou pré-réservation, certificats de participation, calendrier des sessions.
+        </p>
+      </div>
+    </div>
+
+    <div class="formations">
+      <article class="formation reveal">
+        <div class="formation__row"><span class="formation__cat">HSE / Qualité</span><span>5 jours · présentiel</span></div>
+        <h3 class="formation__title">Hygiène, Sécurité &amp; Environnement Niveau 2</h3>
+        <p class="formation__desc">Maîtriser l'analyse de risque chantier, les EPI, la prévention incendie et les protocoles d'urgence. Préparation IOSH.</p>
+        <div class="formation__foot">
+          <div class="formation__price">450 <small style="color:var(--mute)">USD</small></div>
+          <a href="#devis" class="formation__btn">S'inscrire →</a>
+        </div>
+      </article>
+
+      <article class="formation reveal d1">
+        <div class="formation__row"><span class="formation__cat">Télécoms</span><span>3 jours · Kinshasa</span></div>
+        <h3 class="formation__title">Audit &amp; Maintenance Pylônes Télécom</h3>
+        <p class="formation__desc">Inspection visuelle, contrôles non destructifs, calculs de charge, rapport d'audit conforme TIA-222. Cas pratiques sur site.</p>
+        <div class="formation__foot">
+          <div class="formation__price">680 <small style="color:var(--mute)">USD</small></div>
+          <a href="#devis" class="formation__btn">S'inscrire →</a>
+        </div>
+      </article>
+
+      <article class="formation reveal d2">
+        <div class="formation__row"><span class="formation__cat">Énergie solaire</span><span>4 jours · hybride</span></div>
+        <h3 class="formation__title">Dimensionnement &amp; installation PV</h3>
+        <p class="formation__desc">Du calcul de besoins à la pose : dimensionnement panneaux, batteries, onduleurs, intégration réseau et cadre réglementaire RDC.</p>
+        <div class="formation__foot">
+          <div class="formation__price">560 <small style="color:var(--mute)">USD</small></div>
+          <a href="#devis" class="formation__btn">S'inscrire →</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="divider-text">Catalogue complet · Inscription en ligne · Certificats officiels</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT
+============================================================ -->
+<section class="section section--surface" id="contact">
+  <div class="container">
+    <div class="contact">
+      <div class="reveal">
+        <span class="eyebrow"><span class="num">07</span>Contact</span>
+        <h2 class="section__title" style="margin-top:18px">Parlons<br/>de votre projet.</h2>
+        <p class="section__intro" style="margin-top:18px">
+          Bureau à Kinshasa, équipes mobilisables sur tout le territoire RDC.
+          Un devis ? Une question technique ? Un site à auditer ?
+          Le canal le plus rapide reste WhatsApp.
+        </p>
+
+        <div class="contact__list">
+          <div class="contact__item">
+            <span class="contact__icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <div><div class="contact__lab">Adresse</div><div class="contact__val">Kinshasa · République Démocratique du Congo</div></div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.95.37 1.88.7 2.78a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.33 1.83.57 2.78.7A2 2 0 0 1 22 16.92z"/></svg></span>
+            <div><div class="contact__lab">Téléphone</div><div class="contact__val">+243 ___ ___ ___</div></div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+            <div><div class="contact__lab">Email</div><div class="contact__val">contact@prise-sarl.cd</div></div>
+          </div>
+          <div class="contact__item">
+            <span class="contact__icon" style="background:#25D366"><svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.4.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1.1 2.8 1.2 3 .1.2 2.1 3.3 5.1 4.6 1.8.7 2.5.8 3.3.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4 0-.1-.2-.2-.5-.3z M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.4A10 10 0 1 0 12 2z"/></svg></span>
+            <div><div class="contact__lab">WhatsApp Business</div><div class="contact__val">Discussion directe avec un ingénieur</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="map reveal d1" aria-label="Présence en RDC">
+        <!-- Stylized DRC outline -->
+        <svg viewBox="0 0 400 320" preserveAspectRatio="none">
+          <path d="M70 80 L120 60 L180 50 L240 65 L300 90 L340 130 L350 180 L320 230 L280 270 L220 280 L160 270 L110 240 L80 200 L60 150 Z"/>
+        </svg>
+        <div class="pin kin" data-name="Kinshasa · Siège"></div>
+        <div class="pin lub" data-name="Lubumbashi · Solaire 240 kWp"></div>
+        <div class="pin gom" data-name="Goma · Pylône 4G"></div>
+        <div class="pin kis" data-name="Kisangani · Logistique"></div>
+        <div class="pin mat" data-name="Matadi · Génie civil"></div>
+
+        <div style="position:absolute;left:24px;top:24px;color:var(--gold);font-size:11px;letter-spacing:.22em;font-weight:600;text-transform:uppercase">Présence RDC</div>
+        <div style="position:absolute;left:24px;bottom:24px;color:rgba(246,241,230,.55);font-size:11px;letter-spacing:.18em;text-transform:uppercase">5 sites actifs · 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <a href="#" class="brand" aria-label="PRISE Sarl">
+          <span class="brand__mark" aria-hidden="true" style="background:var(--paper)">
+            <svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 M7 14 L17 14" stroke="var(--ink)"/></svg>
+          </span>
+          <span>
+            <small style="color:var(--gold)">Engineering · Infrastructure</small>
+            <strong style="color:var(--paper)">PRISE Sarl</strong>
+          </span>
+        </a>
+        <p class="footer__about">L'excellence dans le service pour des solutions durables, modernes et fiables. Génie civil, télécoms, énergie, logistique et formations professionnelles depuis Kinshasa.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Plan du site</h4>
+        <ul>
+          <li><a href="#about">À propos</a></li>
+          <li><a href="#services">Nos services</a></li>
+          <li><a href="#projects">Projets</a></li>
+          <li><a href="#formations">Formations</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Génie Civil</a></li>
+          <li><a href="#services">Télécoms</a></li>
+          <li><a href="#services">Énergie</a></li>
+          <li><a href="#services">Logistique</a></li>
+          <li><a href="#services">Formations</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">Kinshasa, RDC</a></li>
+          <li><a href="mailto:contact@prise-sarl.cd">contact@prise-sarl.cd</a></li>
+          <li><a href="tel:+243000000000">+243 ___ ___ ___</a></li>
+          <li><a href="#">WhatsApp Business</a></li>
+          <li><a href="#">Newsletter</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© <span id="yr">2026</span> PRISE Sarl — Tous droits réservés.</span>
+      <span>
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">Cookies</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp float -->
+<a href="#contact" class="wa" aria-label="Contacter sur WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.4.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1.1 2.8 1.2 3 .1.2 2.1 3.3 5.1 4.6 1.8.7 2.5.8 3.3.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4 0-.1-.2-.2-.5-.3z M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.4A10 10 0 1 0 12 2z"/></svg>
+</a>
+
+<script>
+/* ============================================================
+   PRISE — interactions
+============================================================ */
+document.documentElement.lang='fr';
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+/* Loader */
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('done'),550);
+});
+
+/* Nav scroll state */
+const nav=document.getElementById('nav');
+let lastY=0;
+addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  nav.classList.toggle('scrolled',y>40);
+  lastY=y;
+},{passive:true});
+
+/* Mobile drawer */
+const drawer=document.getElementById('drawer');
+document.getElementById('burger').addEventListener('click',()=>drawer.classList.add('open'));
+document.getElementById('drawerClose').addEventListener('click',()=>drawer.classList.remove('open'));
+drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>drawer.classList.remove('open')));
+
+/* Reveal on scroll */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.1, rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ============================================================
+   Hero — blueprint subject cycle
+============================================================ */
+const subjects=[
+  {key:'civ', verb:'Construire', label:'Génie Civil & Bâtiment'},
+  {key:'tel', verb:'Connecter',  label:'Télécommunications'},
+  {key:'ene', verb:'Alimenter',  label:'Électricité & Énergie'},
+  {key:'log', verb:'Acheminer',  label:'Transport & Logistique'},
+  {key:'for', verb:'Former',     label:'Formations Professionnelles'},
+];
+const stage=document.getElementById('stage');
+const plates=stage.querySelectorAll('.stage__plate');
+const railBtns=stage.querySelectorAll('.stage__rail button');
+const verbEl=document.getElementById('verb');
+const tickerLabel=document.getElementById('tickerLabel');
+const cornerCount=document.getElementById('cornerCount');
+let active=0, autoTimer=null;
+
+function setSubject(i, manual=false){
+  active=i;
+  const s=subjects[i];
+  plates.forEach(p=>p.classList.remove('active'));
+  // restart animation by replacing node clone (re-trigger keyframes)
+  const target=stage.querySelector(`.stage__plate[data-key="${s.key}"]`);
+  const fresh=target.cloneNode(true);
+  target.replaceWith(fresh);
+  // re-query after replace
+  fresh.classList.add('active');
+  railBtns.forEach((b,bi)=>b.classList.toggle('active', bi===i));
+  // verb swap with subtle animation
+  verbEl.style.transition='opacity .25s ease, transform .25s ease';
+  verbEl.style.opacity='0';
+  verbEl.style.transform='translateY(-6px)';
+  setTimeout(()=>{
+    verbEl.textContent=s.verb;
+    verbEl.style.opacity='1';
+    verbEl.style.transform='translateY(0)';
+  },220);
+  tickerLabel.textContent=s.label;
+  cornerCount.textContent=String(i+1).padStart(2,'0')+' / 05';
+  if(manual){ resetAuto(); }
+}
+
+railBtns.forEach((b,i)=>b.addEventListener('click',()=>setSubject(i,true)));
+
+function startAuto(){ autoTimer=setInterval(()=>setSubject((active+1)%subjects.length),5400); }
+function resetAuto(){ clearInterval(autoTimer); startAuto(); }
+startAuto();
+
+/* ============================================================
+   Project filter
+============================================================ */
+const filterBtns=document.querySelectorAll('#filters .filter');
+const projectEls=document.querySelectorAll('#projects .project');
+filterBtns.forEach(b=>b.addEventListener('click',()=>{
+  filterBtns.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const cat=b.dataset.cat;
+  projectEls.forEach(p=>{
+    const match=cat==='all'||p.dataset.cat===cat;
+    p.style.display=match?'':'none';
+  });
+}));
+
+/* Domain card → jump to devis with preselect */
+document.querySelectorAll('.domain').forEach(d=>{
+  d.addEventListener('click',()=>{
+    devisState.step=1;
+    devisState.answers.service=d.dataset.key;
+    document.getElementById('devis').scrollIntoView({behavior:'smooth'});
+    setTimeout(()=>{ devisState.step=2; renderDevis(); },700);
+  });
+});
+
+/* ============================================================
+   Conversational devis
+============================================================ */
+const SERVICES={
+  civ:{label:'Génie Civil & Bâtiment',
+       sub:[
+         {k:'construction',l:'Construction neuve'},
+         {k:'renovation',l:'Rénovation'},
+         {k:'etudes',l:'Études techniques'},
+         {k:'bulk',l:'Bulk services / VRD'},
+       ]},
+  tel:{label:'Télécommunications',
+       sub:[
+         {k:'acquisition',l:'Acquisition de site'},
+         {k:'pylone',l:'Construction pylône'},
+         {k:'audit',l:'Audit / maintenance'},
+         {k:'colocation',l:'Colocation'},
+       ]},
+  ene:{label:'Électricité & Énergie',
+       sub:[
+         {k:'solaire',l:'Énergie solaire'},
+         {k:'industriel',l:'Installation industrielle'},
+         {k:'domestique',l:'Installation domestique'},
+         {k:'audit',l:'Audit énergétique'},
+       ]},
+  log:{label:'Transport & Logistique',
+       sub:[
+         {k:'transport',l:'Transport matériaux'},
+         {k:'chantier',l:'Logistique chantier'},
+         {k:'appro',l:'Approvisionnement projet'},
+         {k:'multi',l:'Multi-site'},
+       ]},
+  for:{label:'Formations',
+       sub:[
+         {k:'hse',l:'HSE / Qualité'},
+         {k:'telecom',l:'Télécoms'},
+         {k:'genie',l:'Génie civil'},
+         {k:'mgmt',l:'Management / projet'},
+       ]},
+};
+
+const devisState={
+  step:1,
+  answers:{service:null, sub:null, location:null, timeline:null, budget:null,
+           name:'', company:'', email:'', phone:'', message:''}
+};
+
+const qbody=document.getElementById('qbody');
+const qbar=document.getElementById('qbar');
+const qnum=document.getElementById('qnum');
+const qback=document.getElementById('qback');
+
+function renderDevis(){
+  const s=devisState.step;
+  qbar.style.width=(s/4*100)+'%';
+  qnum.textContent=String(s);
+  qback.disabled=(s===1);
+  ['sl1','sl2','sl3','sl4'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.classList.remove('done','now');
+    if(i+1<s) el.classList.add('done');
+    if(i+1===s) el.classList.add('now');
+  });
+
+  if(s===1){
+    qbody.innerHTML=`
+      <div class="qcard__step">Étape 01 sur 04</div>
+      <h3 class="qcard__q">Quel domaine concerne votre projet ?</h3>
+      <div class="qcard__opts">
+        ${Object.entries(SERVICES).map(([k,v])=>`
+          <button class="qopt ${devisState.answers.service===k?'selected':''}" data-svc="${k}">
+            <strong>${v.label}</strong>
+            <span>${v.sub.map(x=>x.l).slice(0,2).join(' · ')}…</span>
+          </button>`).join('')}
+      </div>`;
+    qbody.querySelectorAll('.qopt').forEach(o=>o.addEventListener('click',()=>{
+      devisState.answers.service=o.dataset.svc;
+      devisState.step=2; renderDevis();
+    }));
+  }
+  else if(s===2){
+    const svc=SERVICES[devisState.answers.service];
+    qbody.innerHTML=`
+      <div class="qcard__step">Étape 02 sur 04 · ${svc.label}</div>
+      <h3 class="qcard__q">Quel type d'intervention ?</h3>
+      <div class="qcard__opts">
+        ${svc.sub.map(x=>`
+          <button class="qopt ${devisState.answers.sub===x.k?'selected':''}" data-sub="${x.k}">
+            <strong>${x.l}</strong>
+          </button>`).join('')}
+      </div>`;
+    qbody.querySelectorAll('.qopt').forEach(o=>o.addEventListener('click',()=>{
+      devisState.answers.sub=o.dataset.sub;
+      devisState.step=3; renderDevis();
+    }));
+  }
+  else if(s===3){
+    qbody.innerHTML=`
+      <div class="qcard__step">Étape 03 sur 04</div>
+      <h3 class="qcard__q">Localisation, calendrier et ordre de grandeur ?</h3>
+      <div class="qfields">
+        <input class="qfield" id="f_loc" placeholder="Ville ou province (ex : Kinshasa, Haut-Katanga)" value="${devisState.answers.location||''}"/>
+        <select class="qfield" id="f_tl">
+          <option value="">Calendrier souhaité</option>
+          <option ${devisState.answers.timeline==='urgent'?'selected':''} value="urgent">Urgent (sous 4 semaines)</option>
+          <option ${devisState.answers.timeline==='court'?'selected':''} value="court">Court terme (1–3 mois)</option>
+          <option ${devisState.answers.timeline==='moyen'?'selected':''} value="moyen">Moyen terme (3–6 mois)</option>
+          <option ${devisState.answers.timeline==='strat'?'selected':''} value="strat">Planification stratégique (6+ mois)</option>
+        </select>
+        <select class="qfield" id="f_bg">
+          <option value="">Ordre de grandeur du budget (USD)</option>
+          <option ${devisState.answers.budget==='b1'?'selected':''} value="b1">Moins de 25 000</option>
+          <option ${devisState.answers.budget==='b2'?'selected':''} value="b2">25 000 – 100 000</option>
+          <option ${devisState.answers.budget==='b3'?'selected':''} value="b3">100 000 – 500 000</option>
+          <option ${devisState.answers.budget==='b4'?'selected':''} value="b4">Plus de 500 000</option>
+          <option ${devisState.answers.budget==='b5'?'selected':''} value="b5">À évaluer ensemble</option>
+        </select>
+      </div>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end">
+        <button class="btn btn--dark" id="next3">Continuer →</button>
+      </div>`;
+    document.getElementById('next3').addEventListener('click',()=>{
+      devisState.answers.location=document.getElementById('f_loc').value;
+      devisState.answers.timeline=document.getElementById('f_tl').value;
+      devisState.answers.budget=document.getElementById('f_bg').value;
+      devisState.step=4; renderDevis();
+    });
+  }
+  else if(s===4){
+    qbody.innerHTML=`
+      <div class="qcard__step">Étape 04 sur 04 · Dernière étape</div>
+      <h3 class="qcard__q">À qui répondons-nous ?</h3>
+      <div class="qfields">
+        <input class="qfield" id="f_n" placeholder="Nom complet" value="${devisState.answers.name}"/>
+        <input class="qfield" id="f_co" placeholder="Entreprise / Organisation" value="${devisState.answers.company}"/>
+        <input class="qfield" id="f_em" type="email" placeholder="Email professionnel" value="${devisState.answers.email}"/>
+        <input class="qfield" id="f_ph" placeholder="Téléphone / WhatsApp" value="${devisState.answers.phone}"/>
+        <textarea class="qfield" id="f_msg" placeholder="Précisions sur votre projet (facultatif)">${devisState.answers.message}</textarea>
+      </div>
+      <div style="margin-top:18px;display:flex;justify-content:flex-end;gap:10px">
+        <button class="btn btn--dark" id="submit4">Envoyer la demande →</button>
+      </div>`;
+    document.getElementById('submit4').addEventListener('click',()=>{
+      devisState.answers.name=document.getElementById('f_n').value;
+      devisState.answers.company=document.getElementById('f_co').value;
+      devisState.answers.email=document.getElementById('f_em').value;
+      devisState.answers.phone=document.getElementById('f_ph').value;
+      devisState.answers.message=document.getElementById('f_msg').value;
+      devisState.step=5; renderDevis();
+    });
+  }
+  else if(s===5){
+    const a=devisState.answers;
+    const svc=SERVICES[a.service];
+    const sub=svc.sub.find(x=>x.k===a.sub);
+    const waText=encodeURIComponent(
+      `Bonjour PRISE Sarl, je souhaite un devis :\n\n`+
+      `• Domaine : ${svc.label}\n`+
+      `• Intervention : ${sub?sub.l:'-'}\n`+
+      `• Localisation : ${a.location||'-'}\n`+
+      `• Calendrier : ${a.timeline||'-'}\n`+
+      `• Budget : ${a.budget||'-'}\n`+
+      `• Nom : ${a.name||'-'}\n`+
+      `• Entreprise : ${a.company||'-'}\n`+
+      `• Email : ${a.email||'-'}\n`+
+      `• Téléphone : ${a.phone||'-'}\n\n`+
+      `Message : ${a.message||'-'}`
+    );
+    qbar.style.width='100%';
+    qbody.innerHTML=`
+      <div class="qdone">
+        <div class="qdone__check"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+        <h3>Demande enregistrée.</h3>
+        <p>Notre équipe vous répond sous <strong>24 h ouvrées</strong> à <strong>${a.email||'votre email'}</strong>. <br/>Vous pouvez aussi continuer la conversation directement sur WhatsApp.</p>
+        <div class="qdone__buttons">
+          <a class="btn btn--primary" target="_blank" href="https://wa.me/243000000000?text=${waText}">
+            Continuer sur WhatsApp
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.4.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1.1 2.8 1.2 3 .1.2 2.1 3.3 5.1 4.6 1.8.7 2.5.8 3.3.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4 0-.1-.2-.2-.5-.3z"/></svg>
+          </a>
+          <button class="btn btn--ghost" id="restart">Nouvelle demande</button>
+        </div>
+      </div>`;
+    document.getElementById('restart').addEventListener('click',()=>{
+      devisState.step=1;
+      devisState.answers={service:null, sub:null, location:null, timeline:null, budget:null,
+                          name:'', company:'', email:'', phone:'', message:''};
+      renderDevis();
+    });
+    qback.disabled=true;
+    qnum.textContent='✓';
+  }
+}
+qback.addEventListener('click',()=>{ if(devisState.step>1){ devisState.step--; renderDevis(); } });
+renderDevis();
+
+/* ============================================================
+   FR/EN toggle (placeholder — would swap a translation dict in prod)
+============================================================ */
+document.querySelectorAll('.lang button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.lang button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.documentElement.lang=b.dataset.lang;
+    if(b.dataset.lang==='en'){
+      // toast indicator (production would swap copy)
+      const t=document.createElement('div');
+      t.textContent='English version coming — content will be supplied by client.';
+      Object.assign(t.style,{position:'fixed',bottom:'90px',right:'22px',zIndex:'70',
+        background:'var(--ink)',color:'var(--paper)',padding:'12px 16px',borderRadius:'10px',
+        fontSize:'13px',boxShadow:'var(--shadow-md)',maxWidth:'260px',lineHeight:'1.4'});
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(),3200);
+    }
+  });
+});
+
+/* ============================================================
+   v2 — STUNNING JS
+============================================================ */
+const isCoarse = matchMedia('(pointer:coarse)').matches || matchMedia('(max-width:980px)').matches;
+
+/* ----- Lenis smooth scroll ----- */
+let lenis = null;
+function initLenis(){
+  if(typeof Lenis==='undefined'){ setTimeout(initLenis, 100); return; }
+  lenis = new Lenis({ smoothWheel:true, lerp:0.085, wheelMultiplier:0.9 });
+  function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',(e)=>{
+      const href=a.getAttribute('href');
+      if(href.length<2) return;
+      const tgt=document.querySelector(href);
+      if(tgt){ e.preventDefault(); lenis.scrollTo(tgt,{offset:-60,duration:1.2}); }
+    });
+  });
+}
+initLenis();
+
+/* ----- Scroll progress bar ----- */
+const progress=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const max=document.documentElement.scrollHeight-innerHeight;
+  if(progress) progress.style.width=(scrollY/max*100)+'%';
+},{passive:true});
+
+/* ----- Custom cursor ----- */
+if(!isCoarse){
+  document.documentElement.classList.add('has-cursor');
+  const dot=document.getElementById('cursorDot');
+  const ring=document.getElementById('cursorRing');
+  const coord=document.getElementById('cursorCoord');
+  let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+  addEventListener('mousemove',e=>{
+    mx=e.clientX; my=e.clientY;
+    dot.style.transform=`translate3d(${mx}px,${my}px,0) translate(-50%,-50%)`;
+    coord.style.transform=`translate(${mx+18}px,${my+18}px)`;
+  });
+  function loopC(){
+    rx+=(mx-rx)*0.18; ry+=(my-ry)*0.18;
+    ring.style.transform=`translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)`;
+    requestAnimationFrame(loopC);
+  }
+  loopC();
+
+  const hotSel='a, button, .domain, .project, .qopt, .iso__el, .iso-mini button, .filter, .pin, .formation, .value, .figure';
+  const inkSel='.section--ink, .footer, .strip, .loader';
+  const stageSel='.stage, .iso-stage';
+  const textSel='input, textarea, select';
+  document.querySelectorAll(hotSel).forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('hot'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('hot'));
+  });
+  document.querySelectorAll(inkSel).forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('dark'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('dark'));
+  });
+  document.querySelectorAll(stageSel).forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ring.classList.add('cross');coord.classList.add('show');});
+    el.addEventListener('mouseleave',()=>{ring.classList.remove('cross');coord.classList.remove('show');});
+  });
+  document.querySelectorAll(textSel).forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('text'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('text'));
+  });
+}
+
+/* ----- Hero stage 3D parallax + live coords ----- */
+(function(){
+  const stageEl=document.getElementById('stage');
+  const coord=document.getElementById('cursorCoord');
+  if(!stageEl||isCoarse) return;
+  stageEl.addEventListener('mousemove',e=>{
+    const rect=stageEl.getBoundingClientRect();
+    const x=(e.clientX-rect.left)/rect.width;
+    const y=(e.clientY-rect.top)/rect.height;
+    const rxA=(0.5-y)*8, ryA=(x-0.5)*10;
+    stageEl.style.transform=`perspective(1400px) rotateX(${rxA}deg) rotateY(${ryA}deg)`;
+    const xmm=Math.round(x*4000)/10;
+    const ymm=Math.round(y*4000)/10;
+    if(coord) coord.textContent=`X ${xmm.toFixed(1)} mm   ·   Y ${ymm.toFixed(1)} mm   ·   1:200`;
+  });
+  stageEl.addEventListener('mouseleave',()=>{
+    stageEl.style.transform='perspective(1400px) rotateX(0) rotateY(0)';
+  });
+})();
+
+/* ----- Hero title word stagger reveal ----- */
+(function(){
+  const title=document.querySelector('.hero__title');
+  if(!title) return;
+  const words=title.querySelectorAll('.word');
+  words.forEach((w,i)=>{ w.style.transitionDelay=(0.6+i*0.08)+'s'; });
+  setTimeout(()=>words.forEach(w=>w.classList.add('in')), 700);
+})();
+
+/* ----- Number counters ----- */
+(function(){
+  const targets=document.querySelectorAll('.figure__num, .stat strong');
+  const cio=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el=e.target;
+      const inner=el.querySelector('small');
+      const suffix=inner?inner.outerHTML:'';
+      const txt=el.textContent;
+      const m=txt.match(/^(\d+)/);
+      if(!m){cio.unobserve(el);return;}
+      const target=parseInt(m[1],10);
+      const dur=1400;
+      const t0=performance.now();
+      function step(t){
+        const k=Math.min(1,(t-t0)/dur);
+        const eased=1-Math.pow(1-k,3);
+        const v=Math.round(target*eased);
+        el.innerHTML=v+suffix;
+        if(k<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      cio.unobserve(el);
+    });
+  },{threshold:.45});
+  targets.forEach(t=>cio.observe(t));
+})();
+
+/* ----- Spotlight on dark sections + value tiles ----- */
+document.querySelectorAll('.section--ink').forEach(s=>{
+  s.addEventListener('mouseenter',()=>s.classList.add('live'));
+  s.addEventListener('mouseleave',()=>s.classList.remove('live'));
+  s.addEventListener('mousemove',e=>{
+    const r=s.getBoundingClientRect();
+    s.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    s.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+});
+document.querySelectorAll('.value').forEach(v=>{
+  v.addEventListener('mousemove',e=>{
+    const r=v.getBoundingClientRect();
+    v.style.setProperty('--vx',(e.clientX-r.left)+'px');
+    v.style.setProperty('--vy',(e.clientY-r.top)+'px');
+  });
+});
+
+/* ----- Magnetic buttons ----- */
+if(!isCoarse){
+  document.querySelectorAll('.btn--primary, .btn--dark, .iso-panel__cta, .wa').forEach(el=>{
+    el.classList.add('magnetic');
+    el.addEventListener('mousemove',e=>{
+      const r=el.getBoundingClientRect();
+      const x=e.clientX-r.left-r.width/2;
+      const y=e.clientY-r.top-r.height/2;
+      el.style.transform=`translate(${x*0.18}px,${y*0.28}px)`;
+    });
+    el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
+  });
+}
+
+/* ----- ISOMETRIC PANORAMA interactions ----- */
+const ISO_DATA={
+  civ:{ no:'01', label:'GÉNIE CIVIL & BÂTIMENT',
+        title:'On bâtit ce qui dure.',
+        desc:'De la fondation aux finitions — construction neuve, rénovation, études techniques, terrassement, voiries, bulk services. Une équipe, du devis à la livraison.',
+        chips:['Construction','Rénovation','Études techniques','Terrassement','VRD','Bulk services'],
+        cta:'Demander une étude technique' },
+  tel:{ no:'02', label:'TÉLÉCOMMUNICATIONS',
+        title:'Le réseau passe par nous.',
+        desc:'Acquisition de sites, due diligence, construction et renforcement de pylônes, calculs structurels, audit, maintenance et colocation. Norme TIA-222.',
+        chips:['Pylônes','Site Acquisition','Audit & Maintenance','Colocation','Calculs structurels'],
+        cta:'Soumettre un site pour audit' },
+  ene:{ no:'03', label:'ÉLECTRICITÉ & ÉNERGIE',
+        title:'L’énergie qui suit le soleil.',
+        desc:'Installations industrielles et domestiques, énergie solaire, dimensionnement énergétique, tableaux et maintenance. Réduction facture moyenne : −60 %.',
+        chips:['Énergie solaire','Industriel','Domestique','Tableaux','Dimensionnement','Maintenance'],
+        cta:'Demander une solution énergétique' },
+  log:{ no:'04', label:'TRANSPORT & LOGISTIQUE',
+        title:'Le bon matériau, au bon endroit, à l’heure.',
+        desc:'Transport de matériaux, approvisionnement projet, logistique chantier multi-site, suivi GPS temps réel, gestion douanes et carburant.',
+        chips:['Logistique chantier','Multi-site','Suivi GPS','Approvisionnement','Douanes & carburant'],
+        cta:'Demander un support logistique' },
+  for:{ no:'05', label:'FORMATIONS PROFESSIONNELLES',
+        title:'Apprendre par les ingénieurs qui font.',
+        desc:'HSE/Qualité, télécoms, génie civil, management, gestion de projet, administration des affaires, formations techniques métiers — inscription en ligne, certificats officiels.',
+        chips:['HSE & Qualité','Télécoms','Génie civil','Management','Gestion de projet','Certificats'],
+        cta:'Voir le catalogue de formations' }
+};
+
+(function(){
+  const stage=document.getElementById('isoStage');
+  if(!stage) return;
+  const panel=document.getElementById('isoPanel');
+  const corner=document.getElementById('isoCorner');
+  const isoNo=document.getElementById('isoNo');
+  const isoLab=document.getElementById('isoLab');
+  const isoTitle=document.getElementById('isoTitle');
+  const isoDesc=document.getElementById('isoDesc');
+  const isoChips=document.getElementById('isoChips');
+  const isoCta=document.getElementById('isoCta');
+  const els=stage.querySelectorAll('.iso__el');
+  const mini=document.querySelectorAll('#isoMini button');
+
+  function show(key){
+    const d=ISO_DATA[key]; if(!d) return;
+    panel.classList.remove('idle');
+    isoNo.textContent=d.no;
+    isoLab.textContent=d.label;
+    isoTitle.textContent=d.title;
+    isoDesc.textContent=d.desc;
+    isoChips.innerHTML=d.chips.map(c=>`<span>${c}</span>`).join('');
+    isoCta.firstChild.textContent=d.cta+' ';
+    corner.textContent='DOMAINE '+d.no+' · '+d.label;
+    stage.classList.add('live');
+    mini.forEach(m=>m.classList.toggle('active', m.dataset.key===key));
+  }
+  function reset(){
+    panel.classList.add('idle');
+    isoNo.textContent='01—05';
+    isoLab.textContent='PRISE · MASTER PLAN';
+    isoTitle.textContent='Survolez la scène pour explorer chaque domaine.';
+    isoDesc.textContent='Cinq métiers, une seule équipe — chaque élément du paysage représente un service intégré.';
+    isoChips.innerHTML='';
+    isoCta.firstChild.textContent='Demander un devis ';
+    corner.textContent='5 DOMAINES · 1 ÉQUIPE';
+    stage.classList.remove('live');
+    mini.forEach(m=>m.classList.remove('active'));
+  }
+
+  els.forEach(el=>{
+    const key=el.dataset.key;
+    el.addEventListener('mouseenter',()=>show(key));
+    el.addEventListener('click',()=>{
+      devisState.step=1;
+      devisState.answers.service=key;
+      const target=document.getElementById('devis');
+      if(lenis) lenis.scrollTo(target,{offset:-60,duration:1.2});
+      else target.scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>{ devisState.step=2; renderDevis(); },800);
+    });
+  });
+  stage.addEventListener('mouseleave',reset);
+
+  mini.forEach(b=>{
+    b.addEventListener('mouseenter',()=>show(b.dataset.key));
+    b.addEventListener('click',()=>{
+      devisState.step=1;
+      devisState.answers.service=b.dataset.key;
+      const target=document.getElementById('devis');
+      if(lenis) lenis.scrollTo(target,{offset:-60,duration:1.2});
+      else target.scrollIntoView({behavior:'smooth'});
+      setTimeout(()=>{ devisState.step=2; renderDevis(); },800);
+    });
+  });
+  document.getElementById('isoMini').addEventListener('mouseleave',reset);
+})();
+
+/* ----- Devis step transitions (slide + fade) ----- */
+(function(){
+  const _orig = renderDevis;
+  let _firstRun = true;
+  renderDevis = function(){
+    if(_firstRun){ _firstRun=false; return _orig(); }
+    qbody.classList.add('swapping');
+    setTimeout(()=>{
+      _orig();
+      requestAnimationFrame(()=>qbody.classList.remove('swapping'));
+    },240);
+  };
+})();
+
+/* ----- Iso-panel content cross-fade ----- */
+(function(){
+  const panel=document.getElementById('isoPanel');
+  if(!panel) return;
+  let pending=null;
+  // wrap the inner show/reset by overriding on the panel via MutationObserver-like pattern
+  // simpler: hook into mouseenter/leave on iso elements to fade panel content
+  const stage=document.getElementById('isoStage');
+  const els=stage?stage.querySelectorAll('.iso__el'):[];
+  const mini=document.querySelectorAll('#isoMini button');
+  function fadeSwap(fn){
+    panel.classList.add('swap');
+    if(pending) clearTimeout(pending);
+    pending=setTimeout(()=>{
+      fn();
+      requestAnimationFrame(()=>panel.classList.remove('swap'));
+    },220);
+  }
+  // intercept hover by re-binding (the original handler still fires; we just stack the fade)
+  els.forEach(el=>el.addEventListener('mouseenter',()=>fadeSwap(()=>{}), {capture:true}));
+  mini.forEach(b=>b.addEventListener('mouseenter',()=>fadeSwap(()=>{}), {capture:true}));
+})();
+
+/* ----- Marquee speed reacts to scroll velocity ----- */
+(function(){
+  const track=document.getElementById('stripTrack');
+  if(!track) return;
+  let last=scrollY, v=0;
+  function tick(){
+    const dy=Math.abs(scrollY-last); last=scrollY;
+    v += (dy - v) * 0.18;
+    const dur = Math.max(10, 38 - v*0.6);
+    track.style.animationDuration = dur+'s';
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+</script>
+</body>
+</html>
