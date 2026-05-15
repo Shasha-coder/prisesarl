@@ -1,10 +1,17 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Mic, MicOff, Minus, Send, Sparkles, X } from "lucide-react";
 import { useRealtimeAgent } from "@/agent/useRealtimeAgent";
 import { useI18n } from "@/i18n/I18nProvider";
+
+// Defer three.js — it's ~600 KB. Only load when the panel opens.
+const Avatar = dynamic(() => import("@/agent/Avatar").then((m) => m.Avatar), {
+  ssr: false,
+  loading: () => <AvatarFallback />,
+});
 
 /**
  * AgentDock — Ernest, floating concierge.
@@ -123,6 +130,22 @@ export function AgentDock() {
                 </span>
               </div>
 
+              {/* The face — only mounted when voice mode is active */}
+              {mode === "voice" && (
+                <div className="relative mx-4 mt-3 h-[210px] rounded-xl overflow-hidden bg-gradient-to-b from-paper-2 to-paper-3 shadow-inner">
+                  <div className="absolute inset-0 bg-blueprint-xs opacity-50 pointer-events-none" />
+                  <Avatar
+                    audioLevel={audioLevel}
+                    active={status === "listening" || status === "speaking"}
+                    className="absolute inset-0"
+                  />
+                  <div className="absolute left-3 bottom-2 right-3 flex items-center justify-between text-[10px] font-mono tracking-[0.22em] uppercase text-ink-2/70">
+                    <span>Ernest · live</span>
+                    <span>{statusLabel}</span>
+                  </div>
+                </div>
+              )}
+
               {/* Transcript */}
               <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
                 {transcript.length === 0 && (
@@ -214,6 +237,14 @@ function ModeButton({ active, onClick, children }: { active: boolean; onClick: (
     >
       {children}
     </button>
+  );
+}
+
+function AvatarFallback() {
+  return (
+    <div className="absolute inset-0 grid place-items-center">
+      <div className="w-16 h-16 rounded-full border-2 border-hot/40 border-t-hot animate-spin" />
+    </div>
   );
 }
 
