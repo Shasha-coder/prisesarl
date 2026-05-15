@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import {
   scrollToSection,
+  tourSections,
   highlightDomain,
   setLanguage,
   openDevisForm,
   submitReport,
 } from "./controls";
+import { ERNEST_SYSTEM_PROMPT } from "./system-prompt";
+import { AGENT_TOOLS } from "./tools";
 
 /**
  * useRealtimeAgent
@@ -84,6 +87,11 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
     switch (name) {
       case "scroll_to_section":
         return scrollToSection(String(args.target ?? "hero"));
+      case "tour_sections":
+        return tourSections(
+          Array.isArray(args.sections) ? (args.sections as string[]) : ["hero"],
+          typeof args.dwell_ms === "number" ? (args.dwell_ms as number) : 4200
+        );
       case "highlight_domain":
         return highlightDomain(String(args.domain) as "civil" | "telecom" | "energy" | "logistics" | "training");
       case "set_language":
@@ -126,10 +134,14 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
     setStatus("connecting");
     try {
       const tokenRes = await fetch("/api/agent/session", { method: "POST" });
-      if (!tokenRes.ok) throw new Error(`Session error: ${tokenRes.status}`);
-      const tokenJson = await tokenRes.json();
+      const tokenJson = await tokenRes.json().catch(() => null);
+      if (!tokenRes.ok) {
+        const detail = tokenJson?.detail || tokenJson?.error || tokenRes.statusText;
+        console.error("[Ernest] session error", tokenJson);
+        throw new Error(`Session ${tokenRes.status}: ${detail}`);
+      }
       const ephemeralKey = tokenJson?.client_secret?.value;
-      const model = tokenJson?.model ?? "gpt-realtime";
+      const model = tokenJson?.model ?? "gpt-4o-realtime-preview-2024-12-17";
       if (!ephemeralKey) throw new Error("Session token missing.");
 
       const pc = new RTCPeerConnection();
@@ -166,7 +178,30 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
 
       const dc = pc.createDataChannel("oai-events");
       dcRef.current = dc;
-      dc.onopen = () => setStatus("listening");
+      dc.onopen = () => {
+        // Install Ernest's brain over the live data channel. The /sessions
+        // endpoint rejects some of these fields in the create payload, but
+        // session.update accepts them all.
+        dc.send(
+          JSON.stringify({
+            type: "session.update",
+            session: {
+              modalities: ["audio", "text"],
+              instructions: ERNEST_SYSTEM_PROMPT,
+              tools: AGENT_TOOLS,
+              tool_choice: "auto",
+              input_audio_transcription: { model: "whisper-1" },
+              turn_detection: {
+                type: "server_vad",
+                threshold: 0.5,
+                prefix_padding_ms: 300,
+                silence_duration_ms: 700,
+              },
+            },
+          })
+        );
+        setStatus("listening");
+      };
       dc.onmessage = (e) => {
         let evt: { type?: string;[k: string]: unknown };
         try { evt = JSON.parse(e.data); } catch { return; }
