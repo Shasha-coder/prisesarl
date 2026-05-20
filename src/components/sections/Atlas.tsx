@@ -6,17 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
 import { useT } from "@/i18n/I18nProvider";
 
-/**
- * Atlas — RDC project map.
- *
- * A stylized blueprint outline of the Democratic Republic of the Congo with
- * city pins anchored to real projects. Filtering by domain pulses the
- * matching pins and traces connection lines between them — proof of reach.
- *
- * SVG viewBox is 1000x780. Coordinates are hand-tuned to read as DRC, not
- * to be cartographically perfect.
- */
-
 type Domain = "civil" | "telecom" | "energy" | "logistics" | "training";
 type Project = {
   id: string;
@@ -44,24 +33,15 @@ const PROJECTS: Project[] = [
   { id: "p12", city: "Kolwezi",    region: "Lualaba",    domain: "telecom",   title: "Audit structurel pylônes mine",   year: "2024", x: 620, y: 670 },
 ];
 
-const FILTERS_FR: { id: Domain | "all"; label: string }[] = [
-  { id: "all",       label: "Tous les projets" },
-  { id: "civil",     label: "Génie Civil" },
-  { id: "telecom",   label: "Télécoms" },
-  { id: "energy",    label: "Énergie" },
-  { id: "logistics", label: "Logistique" },
-  { id: "training",  label: "Formations" },
-];
-
 const DOMAIN_COLOR: Record<Domain, string> = {
-  civil:     "#2BB7DC",
+  civil:     "#00d4ff",
   telecom:   "#f5b400",
-  energy:    "#c8632b",
-  logistics: "#14315c",
-  training:  "#8FD2CF",
+  energy:    "#ef4444",
+  logistics: "#a855f7",
+  training:  "#10b981",
 };
 
-// Hand-drawn DRC outline (approx). Not cartographic; recognisable.
+// Hand-drawn DRC outline approx bounds.
 const DRC_OUTLINE =
   "M 50 500 L 75 540 L 110 545 L 150 530 L 195 540 L 240 555 L 270 590 L 310 615 L 360 640 L 410 660 L 470 685 L 520 705 L 580 700 L 640 685 L 690 660 L 720 640 L 745 605 L 755 555 L 760 510 L 810 470 L 830 410 L 825 360 L 805 320 L 770 290 L 730 285 L 690 305 L 640 290 L 590 270 L 540 255 L 500 230 L 470 200 L 460 160 L 480 130 L 510 115 L 540 105 L 555 80 L 530 60 L 495 55 L 460 70 L 425 80 L 390 85 L 350 80 L 310 75 L 270 80 L 230 95 L 195 115 L 160 130 L 130 155 L 105 190 L 85 230 L 70 280 L 60 330 L 55 380 L 50 430 Z";
 
@@ -75,7 +55,6 @@ export function Atlas() {
   const linesRef = useRef<SVGGElement>(null);
   const outlineRef = useRef<SVGPathElement>(null);
 
-  // Initial outline draw-on
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const path = outlineRef.current;
@@ -100,7 +79,6 @@ export function Atlas() {
     };
   }, []);
 
-  // Filter changes — animate matching pins and re-draw connection lines.
   useEffect(() => {
     PROJECTS.forEach((p) => {
       const el = pinsRef.current[p.id];
@@ -137,7 +115,6 @@ export function Atlas() {
     [filter]
   );
 
-  // Connection lines only when filtered to a single domain.
   const connectionLines = useMemo(() => {
     if (filter === "all") return [];
     const pts = visibleProjects;
@@ -154,93 +131,117 @@ export function Atlas() {
       id="projets"
       className="relative py-[140px] bg-ink text-paper overflow-hidden"
     >
-      <div className="absolute inset-0 bg-blueprint-dark opacity-50 pointer-events-none" />
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(43,183,220,0.18),transparent_55%),radial-gradient(circle_at_80%_80%,rgba(245,180,0,0.10),transparent_55%)]" />
+      <div className="absolute inset-0 bg-blueprint-dark opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(0,212,255,0.12),transparent_55%),radial-gradient(circle_at_80%_80%,rgba(245,180,0,0.06),transparent_55%)]" />
 
       <div className="max-w-[1280px] mx-auto px-5 sm:px-7 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-6 md:gap-16 items-end mb-12">
           <div>
-            <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-gold mb-4">
-              <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-gold text-ink text-[10px] tracking-normal">04</span>
+            <div className="inline-flex items-center gap-2.5 text-[11px] font-bold tracking-[0.32em] uppercase text-[#f5b400] mb-4">
+              <span className="inline-grid place-items-center w-6 h-6 rounded-full bg-[#f5b400] text-ink text-[10px] tracking-normal font-bold">MAP</span>
               {t("atlas.eyebrow")}
             </div>
-            <h2 className="font-serif font-semibold text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-[-0.025em]">
+            <h2 className="font-serif font-semibold text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-[-0.025em] text-cyan-50">
               {t("atlas.title")}
             </h2>
           </div>
-          <p className="text-[16px] text-paper/70 leading-[1.7] max-w-[480px] md:text-right md:ml-auto">
+          <p className="text-[16px] text-cyan-100/70 leading-[1.7] max-w-[480px] md:text-right md:ml-auto">
             {t("atlas.lede")}
           </p>
         </div>
 
-        {/* Filter chips */}
+        {/* Tactical filter toggles */}
         <div className="flex flex-wrap gap-2 mb-10">
-          {FILTERS_FR.map((f) => (
-            <button
-              key={f.id}
-              onClick={() => setFilter(f.id)}
-              className={cn(
-                "px-4 py-2 rounded-full text-[12px] font-semibold tracking-[0.04em] transition-all border",
-                filter === f.id
-                  ? "bg-paper text-ink border-paper"
-                  : "bg-transparent text-paper/70 border-white/15 hover:border-white/40 hover:text-paper"
-              )}
-            >
-              {f.id === "all" ? t("atlas.filter.all") : f.label}
-              {f.id !== "all" && (
+          <button
+            onClick={() => setFilter("all")}
+            className={cn(
+              "px-4 py-2 rounded-full text-[12px] font-bold tracking-[0.06em] uppercase transition-all border font-mono duration-200 clickable",
+              filter === "all"
+                ? "bg-[#00d4ff] text-slate-950 border-cyan-400 shadow-[0_0_12px_rgba(0,212,255,0.4)]"
+                : "bg-slate-950/40 border-cyan-500/20 text-cyan-200 hover:border-cyan-400 hover:text-cyan-50"
+            )}
+          >
+            {t("atlas.filter.all")}
+          </button>
+          
+          {(["civil", "telecom", "energy", "logistics", "training"] as Domain[]).map((dom) => {
+            const labels: Record<Domain, string> = {
+              civil: "Génie Civil",
+              telecom: "Télécoms",
+              energy: "Énergie",
+              logistics: "Logistique",
+              training: "Formations",
+            };
+            return (
+              <button
+                key={dom}
+                onClick={() => setFilter(dom)}
+                className={cn(
+                  "px-4 py-2 rounded-full text-[12px] font-bold tracking-[0.06em] uppercase transition-all border font-mono duration-200 clickable flex items-center gap-2",
+                  filter === dom
+                    ? "bg-[#00d4ff] text-slate-950 border-cyan-400 shadow-[0_0_12px_rgba(0,212,255,0.4)]"
+                    : "bg-slate-950/40 border-cyan-500/20 text-cyan-200 hover:border-cyan-400 hover:text-cyan-50"
+                )}
+              >
+                {labels[dom]}
                 <span
-                  className="inline-block w-1.5 h-1.5 rounded-full ml-2 align-middle"
-                  style={{ background: DOMAIN_COLOR[f.id as Domain] }}
+                  className="inline-block w-1.5 h-1.5 rounded-full"
+                  style={{ 
+                    background: DOMAIN_COLOR[dom],
+                    boxShadow: `0 0 6px ${DOMAIN_COLOR[dom]}`
+                  }}
                 />
-              )}
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-10">
-          {/* The Map */}
-          <div className="relative aspect-[1000/780] bg-ink-2/40 rounded-2xl border border-white/10 overflow-hidden">
-            <div className="absolute inset-0 bg-blueprint-dark opacity-60 pointer-events-none" />
+          
+          {/* Tactical map display plate */}
+          <div className="relative aspect-[1000/780] glass-hud border border-cyan-500/25 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(0,212,255,0.05)]">
+            <div className="absolute inset-0 bg-blueprint-dark opacity-55 pointer-events-none" />
+            <div className="radar-scan-line" />
 
-            {/* Map plate frame */}
-            <div className="absolute top-3 left-4 text-[10px] tracking-[0.28em] uppercase text-paper/60 font-mono z-10">
-              RDC · ATLAS-01
+            {/* Tactical GPS Readouts */}
+            <div className="absolute top-3.5 left-4 text-[8px] tracking-[0.28em] uppercase text-cyan-400/50 font-mono z-10">
+              RDC // COMMAND.GRID_ATLAS-01
             </div>
-            <div className="absolute top-3 right-4 text-[10px] tracking-[0.28em] uppercase text-paper/60 font-mono z-10">
-              Échelle ≈ 1 / 6 000 000
+            <div className="absolute top-3.5 right-4 text-[8px] tracking-[0.28em] uppercase text-[#f5b400]/70 font-mono z-10 animate-pulse">
+              CALIBRATION: ACTIVE // SCALE ~ 1:6,000,000
             </div>
 
             <svg viewBox="0 0 1000 780" className="w-full h-full">
-              {/* Hatched ocean / outside fill via clipPath */}
               <defs>
-                <pattern id="atlasHatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-                  <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.08)" strokeWidth="0.6" />
+                <pattern id="tacticalHatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+                  <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(0,212,255,0.06)" strokeWidth="0.5" />
                 </pattern>
-                <radialGradient id="landGlow" cx="0.5" cy="0.5" r="0.55">
-                  <stop offset="0%" stopColor="rgba(43,183,220,0.18)" />
-                  <stop offset="100%" stopColor="rgba(43,183,220,0)" />
+                <radialGradient id="hologramGlow" cx="0.5" cy="0.5" r="0.55">
+                  <stop offset="0%" stopColor="rgba(0,212,255,0.18)" />
+                  <stop offset="100%" stopColor="rgba(0,212,255,0)" />
                 </radialGradient>
               </defs>
 
-              {/* Background hatch */}
-              <rect x="0" y="0" width="1000" height="780" fill="url(#atlasHatch)" />
+              {/* Holographic blueprint hatching */}
+              <rect x="0" y="0" width="1000" height="780" fill="url(#tacticalHatch)" />
 
-              {/* Country fill glow */}
-              <path d={DRC_OUTLINE} fill="url(#landGlow)" />
+              {/* Tactical landmass aura glow */}
+              <path d={DRC_OUTLINE} fill="url(#hologramGlow)" />
 
-              {/* Country outline (draws on scroll) */}
+              {/* Pulsing blueprint contour border */}
               <path
                 ref={outlineRef}
                 d={DRC_OUTLINE}
                 fill="none"
-                stroke="rgba(246,241,230,0.7)"
-                strokeWidth="1.4"
+                stroke="rgba(0,212,255,0.6)"
+                strokeWidth="1.5"
                 strokeLinejoin="round"
                 strokeLinecap="round"
+                className="drop-shadow-[0_0_8px_rgba(0,212,255,0.4)]"
               />
 
-              {/* Lat/long crosshair grid (light) */}
-              <g stroke="rgba(255,255,255,0.06)" strokeWidth="0.5">
+              {/* Calibration blueprint coordinates lines grid */}
+              <g stroke="rgba(0,212,255,0.05)" strokeWidth="0.5">
                 {[100, 200, 300, 400, 500, 600, 700, 800, 900].map((x) => (
                   <line key={`v-${x}`} x1={x} y1="0" x2={x} y2="780" />
                 ))}
@@ -249,13 +250,14 @@ export function Atlas() {
                 ))}
               </g>
 
-              {/* Capital marker — Kinshasa cross */}
-              <g transform="translate(175, 470)">
-                <line x1="-12" y1="0" x2="12" y2="0" stroke="rgba(245,180,0,0.5)" strokeWidth="0.8" />
-                <line x1="0" y1="-12" x2="0" y2="12" stroke="rgba(245,180,0,0.5)" strokeWidth="0.8" />
+              {/* Kinshasa tactical crosshairs marker */}
+              <g transform="translate(175, 470)" className="animate-spin" style={{ transformOrigin: "center", animationDuration: "12s" }}>
+                <line x1="-15" y1="0" x2="15" y2="0" stroke="rgba(245,180,0,0.6)" strokeWidth="0.8" />
+                <line x1="0" y1="-15" x2="0" y2="15" stroke="rgba(245,180,0,0.6)" strokeWidth="0.8" />
+                <circle r="4" fill="none" stroke="rgba(245,180,0,0.6)" strokeWidth="0.8" strokeDasharray="2 2" />
               </g>
 
-              {/* Connection lines */}
+              {/* Animated fiber optical connection routing */}
               <g ref={linesRef}>
                 {connectionLines.map((line) => (
                   <line
@@ -264,14 +266,15 @@ export function Atlas() {
                     y1={line.y1}
                     x2={line.x2}
                     y2={line.y2}
-                    stroke={filter !== "all" ? DOMAIN_COLOR[filter as Domain] : "#fff"}
-                    strokeWidth="1"
-                    strokeDasharray="3 3"
+                    stroke={filter !== "all" ? DOMAIN_COLOR[filter as Domain] : "#00d4ff"}
+                    strokeWidth="1.2"
+                    strokeDasharray="6 4"
+                    className="animate-[dash_20s_linear_infinite]"
                   />
                 ))}
               </g>
 
-              {/* Pins */}
+              {/* Telemetry Project Node Pins */}
               {PROJECTS.map((p) => {
                 const active = filter === "all" || filter === p.domain;
                 const color = DOMAIN_COLOR[p.domain];
@@ -285,19 +288,20 @@ export function Atlas() {
                     style={{ cursor: "pointer" }}
                   >
                     {active && (
-                      <circle r="14" fill={color} opacity="0.18" className="pin-ring origin-center" />
+                      <circle r="16" fill={color} opacity="0.25" className="pin-ring origin-center animate-ping" style={{ animationDuration: "3s" }} />
                     )}
-                    <circle r="6" fill={color} />
-                    <circle r="2.4" fill="#fff" />
+                    <circle r="6" fill={color} className="drop-shadow-[0_0_6px_rgba(0,212,255,0.6)]" />
+                    <circle r="2.2" fill="#fff" />
                     <text
                       x="0"
-                      y="-16"
-                      fontSize="10"
-                      letterSpacing="1"
+                      y="-18"
+                      fontSize="9"
+                      letterSpacing="1.5"
                       fontFamily="var(--font-mono, monospace)"
-                      fill="rgba(246,241,230,0.9)"
+                      fill={active ? "rgba(0,212,255,0.95)" : "rgba(255,255,255,0.3)"}
                       textAnchor="middle"
-                      style={{ opacity: active ? 1 : 0.3, transition: "opacity 0.4s ease" }}
+                      className="font-bold"
+                      style={{ transition: "all 0.3s ease" }}
                     >
                       {p.city.toUpperCase()}
                     </text>
@@ -306,48 +310,46 @@ export function Atlas() {
               })}
             </svg>
 
-            {/* Hover detail panel */}
+            {/* Floating tactical Hover Telemetry Box */}
             <HoverPanel project={hover ? PROJECTS.find((p) => p.id === hover) : undefined} />
           </div>
 
-          {/* Right column — project list */}
-          <div className="flex flex-col gap-2.5 max-h-[600px] overflow-y-auto pr-1 custom-scroll">
+          {/* Right column — record indexing log list */}
+          <div className="flex flex-col gap-2.5 max-h-[600px] overflow-y-auto pr-2 custom-scroll agent-transcript-scroll">
             {visibleProjects.map((p) => (
               <div
                 key={p.id}
                 onMouseEnter={() => setHover(p.id)}
                 onMouseLeave={() => setHover(null)}
                 className={cn(
-                  "group p-4 rounded-xl border transition-all cursor-pointer",
+                  "group p-4 rounded-xl border transition-all cursor-pointer flex flex-col gap-1 clickable",
                   hover === p.id
-                    ? "bg-white/8 border-white/20"
-                    : "bg-white/[0.03] border-white/8 hover:bg-white/6 hover:border-white/15"
+                    ? "bg-slate-900/80 border-[#00d4ff] shadow-[0_0_15px_rgba(0,212,255,0.15)]"
+                    : "bg-slate-950/40 border-cyan-500/15 hover:bg-slate-900/40 hover:border-cyan-500/30"
                 )}
               >
-                <div className="flex items-start justify-between gap-3 mb-1.5">
-                  <span className="text-[11px] tracking-[0.18em] uppercase font-mono text-paper/55">
-                    {p.region} · {p.year}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[9px] tracking-[0.22em] uppercase font-mono text-cyan-400/60 font-semibold">
+                    REG: {p.region} // YR: {p.year}
                   </span>
                   <span
-                    className="w-2 h-2 rounded-full mt-1.5 shrink-0"
-                    style={{ background: DOMAIN_COLOR[p.domain] }}
+                    className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse"
+                    style={{ 
+                      background: DOMAIN_COLOR[p.domain],
+                      boxShadow: `0 0 6px ${DOMAIN_COLOR[p.domain]}`
+                    }}
                   />
                 </div>
-                <h4 className="font-serif text-[18px] text-paper leading-tight mb-1">{p.city}</h4>
-                <p className="text-[13px] text-paper/65 leading-[1.5]">{p.title}</p>
+                <h4 className="font-serif text-[17px] text-cyan-100 font-semibold leading-tight mt-1">{p.city}</h4>
+                <p className="text-[12.5px] text-cyan-200/60 leading-[1.5]">{p.title}</p>
               </div>
             ))}
             {visibleProjects.length === 0 && (
-              <p className="text-paper/50 text-sm">Aucun projet à afficher.</p>
+              <p className="text-cyan-400/40 text-xs font-mono tracking-wider py-4">[SYSTEM: NO_PROJECTS_FOUND]</p>
             )}
           </div>
         </div>
       </div>
-      <style jsx>{`
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 6px; }
-      `}</style>
     </section>
   );
 }
@@ -355,15 +357,17 @@ export function Atlas() {
 function HoverPanel({ project }: { project?: Project }) {
   if (!project) return null;
   return (
-    <div className="absolute bottom-4 left-4 right-4 max-w-[440px] bg-paper text-ink rounded-xl p-4 shadow-lg anim-fadeRise pointer-events-none">
-      <div className="flex items-start justify-between gap-3 mb-1">
-        <span className="text-[10px] tracking-[0.22em] uppercase font-mono text-mute">
-          {project.region} · {project.year}
+    <div className="absolute bottom-4 left-4 right-4 max-w-[420px] glass-hud-chat border border-cyan-500/30 text-cyan-50 rounded-xl p-4.5 shadow-2xl pointer-events-none anim-fadeRise">
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span className="text-[8px] tracking-[0.26em] uppercase font-mono text-[#f5b400] font-bold">
+          [TARGET_FOCUS // DATA_LOCKED]
         </span>
-        <span className="w-2 h-2 rounded-full mt-1" style={{ background: "currentColor" }} />
+        <span className="text-[8.5px] font-mono text-cyan-400/60">
+          SYS // YR_{project.year}
+        </span>
       </div>
-      <h4 className="font-serif text-[22px] leading-tight">{project.city}</h4>
-      <p className="text-[13px] text-ink-2 mt-1">{project.title}</p>
+      <h4 className="font-serif text-[20px] text-cyan-50 font-bold leading-tight">{project.city} // {project.region.toUpperCase()}</h4>
+      <p className="text-[12.5px] text-cyan-100/70 mt-1.5 leading-relaxed">{project.title}</p>
     </div>
   );
 }

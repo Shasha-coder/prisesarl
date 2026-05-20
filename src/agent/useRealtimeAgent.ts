@@ -136,9 +136,13 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
       const tokenRes = await fetch("/api/agent/session", { method: "POST" });
       const tokenJson = await tokenRes.json().catch(() => null);
       if (!tokenRes.ok) {
-        const detail = tokenJson?.detail || tokenJson?.error || tokenRes.statusText;
-        console.error("[Ernest] session error", tokenJson);
-        throw new Error(`Session ${tokenRes.status}: ${detail}`);
+        const detail = tokenJson?.detail || tokenJson?.error || tokenRes?.statusText || "Configuration error";
+        console.warn("[Ernest] Session initialization skipped: OPENAI_API_KEY is not set in the server environment.", tokenJson);
+        throw new Error(
+          detail.includes("OPENAI_API_KEY") 
+            ? "Pour parler à Ernest, configurez votre clé OPENAI_API_KEY dans un fichier .env" 
+            : `Session ${tokenRes.status}: ${detail}`
+        );
       }
       // GA shape: { value, model, voice }
       const ephemeralKey: string | undefined = tokenJson?.value;
@@ -180,20 +184,31 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
       const dc = pc.createDataChannel("oai-events");
       dcRef.current = dc;
 
+      const currentLang = (typeof window !== "undefined" ? window.localStorage.getItem("prise.lang") : "fr") || "fr";
+
       let hasGreeted = false;
       const triggerGreeting = () => {
         if (hasGreeted || dc.readyState !== "open") return;
         hasGreeted = true;
+
+        const isEnglish = currentLang === "en";
+        const promptText = isEnglish
+          ? "Open the conversation NOW by speaking aloud, warmly and naturally in English: " +
+            "« Hello and welcome to PRISE Sarl. I am Ernest, your AI concierge. How can I assist you with your project today? » " +
+            "Deliver it with the calm, charismatic confidence of a senior engineer — not as a recitation. " +
+            "Stop after that question. Wait for the visitor to respond. " +
+            "If they reply in another language, continue in their language."
+          : "Open the conversation NOW by speaking aloud, warmly and naturally in French: " +
+            "« Bonjour et bienvenue chez PRISE Sarl. Je suis Ernest, votre concierge. Comment puis-je vous aider aujourd'hui ? » " +
+            "Deliver it with the calm, charismatic confidence of a senior engineer — not as a recitation. " +
+            "Stop after that question. Wait for the visitor to respond. " +
+            "If they reply in another language, continue in their language.";
+
         dc.send(
           JSON.stringify({
             type: "response.create",
             response: {
-              instructions:
-                "Open the conversation NOW by speaking aloud, warmly and naturally in French: " +
-                "« Bonjour et bienvenue chez PRISE Sarl. Je suis Ernest, votre concierge. Comment puis-je vous aider aujourd'hui ? » " +
-                "Deliver it with the calm, charismatic confidence of a senior engineer — not as a recitation. " +
-                "Stop after that question. Wait for the visitor to respond. " +
-                "If they reply in another language, continue in their language.",
+              instructions: promptText,
             },
           })
         );
@@ -226,9 +241,8 @@ export function useRealtimeAgent(opts: UseAgentOpts = {}) {
           })
         );
 
-        // Fallback: if the server never confirms session.updated within
-        // 1.5 s (some accounts don't emit it), trigger greeting anyway.
-        window.setTimeout(triggerGreeting, 1500);
+        // Trigger the dynamic language greeting IMMEDIATELY on data channel open
+        triggerGreeting();
         setStatus("listening");
       };
 

@@ -249,3 +249,94 @@
 .agent-arrived {
   animation: agentArrived 1.4s cubic-bezier(0.4, 0, 0.2, 1) 1;
 }
+
+/* -------------------------------------------------------------
+   Futuristic Holographic HUD & Neon Utilities
+   ------------------------------------------------------------- */
+
+.glass-hud {
+  background: rgba(8, 12, 21, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(43, 183, 220, 0.25) !important;
+  box-shadow: 
+    0 20px 60px -15px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 35px rgba(43, 183, 220, 0.12) !important;
+}
+
+.glass-hud-chat {
+  background: rgba(14, 25, 44, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(43, 183, 220, 0.15) !important;
+}
+
+.text-neon-cyan {
+  color: #2BB7DC;
+  text-shadow: 0 0 10px rgba(43, 183, 220, 0.45);
+}
+
+.text-neon-gold {
+  color: #f5b400;
+  text-shadow: 0 0 10px rgba(245, 180, 0, 0.45);
+}
+
+.bg-hologrid {
+  background-image: 
+    linear-gradient(rgba(43, 183, 220, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 183, 220, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.border-neon {
+  border-color: rgba(43, 183, 220, 0.35);
+  box-shadow: 0 0 12px rgba(43, 183, 220, 0.18);
+}
+
+/* Custom scrollbar styled specifically for the agent chat transcript */
+.agent-transcript-scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.agent-transcript-scroll::-webkit-scrollbar-track {
+  background: rgba(8, 12, 21, 0.3);
+  border-radius: 4px;
+}
+.agent-transcript-scroll::-webkit-scrollbar-thumb {
+  background: rgba(43, 183, 220, 0.3);
+  border-radius: 4px;
+}
+.agent-transcript-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(43, 183, 220, 0.6);
+}
+
+/* Real-time radar scan line animation */
+@keyframes radarScan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(240px); opacity: 0; }
+}
+.radar-scan-line {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(43, 183, 220, 0.7), transparent);
+  box-shadow: 0 0 8px rgba(43, 183, 220, 0.9);
+  animation: radarScan 3s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Glowing active tab line slider animation */
+@keyframes neonPulse {
+  0%, 100% { opacity: 0.65; box-shadow: 0 0 8px rgba(43, 183, 220, 0.3); }
+  50% { opacity: 1; box-shadow: 0 0 16px rgba(43, 183, 220, 0.7); }
+}
+.neon-pulse-glow {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
