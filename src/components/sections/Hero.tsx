@@ -91,12 +91,13 @@ export function Hero() {
 
   useEffect(() => {
     if (!autoplay) return;
+    // Full SVG construction (layers + pen) needs ~7–8s before the next domain
     const id = window.setTimeout(() => {
       setActive((curr) => {
         const i = DOMAINS.findIndex((d) => d.id === curr);
         return DOMAINS[(i + 1) % DOMAINS.length].id;
       });
-    }, 5200);
+    }, 8200);
     return () => window.clearTimeout(id);
   }, [active, autoplay]);
 
