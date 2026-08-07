@@ -1,4 +1,18 @@
-export default function SuspendedPage() {
+import { SITE_LOCKED, SUSPENSION_MESSAGE } from "@/lib/site-lock";
+
+// Never serve a cached full-site build while locked
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default function Page() {
+  if (!SITE_LOCKED) {
+    return (
+      <main style={{ padding: 40, fontFamily: "system-ui" }}>
+        <p>Site unlock flag is off but the full site was removed from this build. Restore from git history.</p>
+      </main>
+    );
+  }
+
   return (
     <main
       style={{
@@ -64,8 +78,7 @@ export default function SuspendedPage() {
             color: "#f5f5f5",
           }}
         >
-          The website has been temporarily suspended because the account has an
-          outstanding balance.
+          {SUSPENSION_MESSAGE}
         </h1>
         <p
           style={{

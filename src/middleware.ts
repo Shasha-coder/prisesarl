@@ -1,50 +1,57 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SITE_LOCKED, SUSPENSION_MESSAGE } from "@/lib/site-lock";
 
 /**
- * Site lock — outstanding account balance.
- * Set SITE_LOCKED=false (or remove middleware) to restore the site after payment.
+ * Hard site lock (code-only). Blocks APIs and funnels every page to "/".
+ * Unlock: set SITE_LOCKED = false in src/lib/site-lock.ts and restore pages from git.
  */
-const SITE_LOCKED = true;
-
 export function middleware(req: NextRequest) {
   if (!SITE_LOCKED) return NextResponse.next();
 
   const { pathname } = req.nextUrl;
 
-  // Allow only static assets / metadata Next needs
+  // Allow Next internals + static files only
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname === "/icon" ||
     pathname === "/apple-icon" ||
     pathname === "/manifest.webmanifest" ||
-    pathname.match(/\.(ico|png|jpg|jpeg|svg|webp|gif|woff2?|css|js|map|txt|xml)$/)
+    /\.(ico|png|jpg|jpeg|svg|webp|gif|woff2?|css|js|map|txt|xml|webmanifest)$/i.test(
+      pathname
+    )
   ) {
     return NextResponse.next();
   }
 
-  // Kill all APIs while locked
   if (pathname.startsWith("/api")) {
     return NextResponse.json(
+      { error: "Service unavailable", message: SUSPENSION_MESSAGE },
       {
-        error: "Service unavailable",
-        message:
-          "The website has been temporarily suspended because the account has an outstanding balance.",
-      },
-      { status: 503, headers: { "Retry-After": "86400" } }
+        status: 503,
+        headers: {
+          "Retry-After": "86400",
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
     );
   }
 
-  // Everything else → home (suspension page)
+  // Force home (suspension page) for any other path
   if (pathname !== "/") {
     const url = req.nextUrl.clone();
     url.pathname = "/";
-    return NextResponse.redirect(url);
+    url.search = "";
+    return NextResponse.redirect(url, 307);
   }
 
-  return NextResponse.next();
+  const res = NextResponse.next();
+  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  res.headers.set("Pragma", "no-cache");
+  res.headers.set("X-Site-Status", "suspended");
+  return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static|_next/image|.*\\..*).*)"],
 };

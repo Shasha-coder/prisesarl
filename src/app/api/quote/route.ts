@@ -1,29 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { SITE_LOCKED, SUSPENSION_MESSAGE } from "@/lib/site-lock";
 
-export async function POST(req: Request) {
-  try {
-    const data = await req.json();
-    
-    // In a real scenario, this would:
-    // 1. Send data to OpenAI/Gemini for advanced lead scoring
-    // 2. Insert the lead into Supabase
-    // 3. Trigger a Resend email or WhatsApp API webhook
-    
-    console.log("New Lead Received from AI Concierge:", data);
-
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    return NextResponse.json({ 
-      success: true, 
-      message: "Quote request received and processed.",
-      leadId: `LEAD-${Math.floor(Math.random() * 10000)}`
-    });
-  } catch (error) {
-    console.error("Webhook error:", error);
+export async function POST() {
+  if (SITE_LOCKED) {
     return NextResponse.json(
-      { success: false, error: "Failed to process quote" },
-      { status: 500 }
+      { success: false, error: SUSPENSION_MESSAGE },
+      { status: 503 }
     );
   }
+  return NextResponse.json({ error: "Not available" }, { status: 503 });
+}
+
+export async function GET() {
+  return POST();
 }
