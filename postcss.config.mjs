@@ -1,6 +1,7 @@
-/** Empty while site is locked — no Tailwind pipeline required */
 const config = {
-  plugins: {},
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
 };
 
 export default config;
